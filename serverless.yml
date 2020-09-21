@@ -13,7 +13,7 @@
 
 service: serverless-url-shortener
 # app and org for use with dashboard.serverless.com
-app: serverless-url-shortener
+app: Serverless URL Shortener
 org: toporok
 
 # You can pin your service to only deploy with a specific Serverless version
