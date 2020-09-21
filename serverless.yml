@@ -11,10 +11,10 @@
 #
 # Happy Coding!
 
-service: serverless-url-shortener
+service: sls-url-shrtnr
 # app and org for use with dashboard.serverless.com
-app: Serverless URL Shortener
 org: toporok
+app: serverless-url-shortener
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
