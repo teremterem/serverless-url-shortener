@@ -13,7 +13,7 @@
 
 ### Research (and document)
 
-- Test driven development (what would be the scope of test coverage)
+- Test driven development (what would be the scope of test coverage?)
   - pytest?
 - Debugging
 - Serverless staging approach (with team work in mind)
