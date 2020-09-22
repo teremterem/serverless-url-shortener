@@ -22,7 +22,7 @@
 ---
 
 - set up an alert for lambdas to not go over certain runtime threshold to protect from possible inadvertent
-  endless recursion of lambdas (a mistake that is actually not that hard to make but which will cost a lot - google it)
+  endless recursion of lambdas (a mistake that is not that hard to make but which may cost a lot - google it)
 - warm up lambdas? (minor... google it)
 
 ### Research (extra)
