@@ -52,3 +52,4 @@
 - https://medium.com/@adhorn/getting-started-with-aws-lambda-layers-for-python-6e10b1f9a5d
 - https://www.serverless.com/plugins/serverless-python-requirements
 - https://www.serverless.com/blog/serverless-python-packaging
+- https://github.com/lambci/docker-lambda
