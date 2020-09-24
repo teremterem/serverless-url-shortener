@@ -8,6 +8,7 @@
 - AWS Lambda Layer(s) for Python dependencies
   - pipenv
   - make sure layers aren't redeployed everytime lambdas are deployed (should redeploy only when changed)
+  - mention env name in layer name
 - GraphQL
 - DynamoDB
 - Cognito
@@ -49,3 +50,5 @@
 - https://www.serverless.com/blog/publish-aws-lambda-layers-serverless-framework
 - https://www.serverless.com/framework/docs/providers/aws/guide/layers/
 - https://medium.com/@adhorn/getting-started-with-aws-lambda-layers-for-python-6e10b1f9a5d
+- https://www.serverless.com/plugins/serverless-python-requirements
+- https://www.serverless.com/blog/serverless-python-packaging
