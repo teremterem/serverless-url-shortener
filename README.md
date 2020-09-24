@@ -7,6 +7,7 @@
 
 - AWS Lambda Layer(s) for Python dependencies
   - pipenv
+  - make sure layers aren't redeployed everytime lambdas are deployed (should redeploy only when changed)
 - GraphQL
 - DynamoDB
 - Cognito
@@ -15,6 +16,8 @@
 
 - Test driven development (what would be the scope of test coverage?)
   - pytest?
+  - separate unit tests from integration tests and let integration tests hit the real deployment? (what to do about
+    setup/teardown for integration tests though?)
 - Debugging
 - Serverless staging approach (with team work in mind)
 - CI/CD (how to enforce test execution)
@@ -44,3 +47,5 @@
 - https://www.serverless.com/framework/docs/providers/aws/guide/credentials/
 - https://www.serverless.com/framework/docs/dashboard/access-roles/
 - https://www.serverless.com/blog/publish-aws-lambda-layers-serverless-framework
+- https://www.serverless.com/framework/docs/providers/aws/guide/layers/
+- https://medium.com/@adhorn/getting-started-with-aws-lambda-layers-for-python-6e10b1f9a5d

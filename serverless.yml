@@ -57,6 +57,10 @@ provider:
 #    - exclude-me.py
 #    - exclude-me-dir/**
 
+layers:
+  packages:
+    path: packages
+
 functions:
   hello:
     handler: handler.hello
@@ -113,7 +117,3 @@ functions:
 #     NewOutput:
 #       Description: "Description for the output"
 #       Value: "Some output value"
-
-layers:
-  packages:
-    path: packages

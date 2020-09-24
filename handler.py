@@ -1,18 +1,15 @@
 import json
+from traceback import print_exc
 
 
 def hello(event, context):
     try:
-        from packages.sample_module import GREETING
+        from sample_module import GREETING
         msg = GREETING
     except:
-        print('FAILED: from packages.sample_module import GREETING')
-        try:
-            from sample_module import GREETING
-            msg = GREETING
-        except:
-            print('FAILED: from sample_module import GREETING')
-            msg = "Go Serverless v1.0! Your function executed successfully! (almost)"
+        print('FAILED: from sample_module import GREETING')
+        print_exc()
+        msg = "Go Serverless v1.0! Your function executed successfully! (almost)"
     body = {
         "message": msg,
         "input": event
