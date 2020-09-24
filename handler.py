@@ -2,8 +2,19 @@ import json
 
 
 def hello(event, context):
+    try:
+        from packages.sample_module import GREETING
+        msg = GREETING
+    except:
+        print('FAILED: from packages.sample_module import GREETING')
+        try:
+            from sample_module import GREETING
+            msg = GREETING
+        except:
+            print('FAILED: from sample_module import GREETING')
+            msg = "Go Serverless v1.0! Your function executed successfully! (almost)"
     body = {
-        "message": "Go Serverless v1.0! Your function executed successfully!",
+        "message": msg,
         "input": event
     }
 
