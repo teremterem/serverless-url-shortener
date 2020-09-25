@@ -1,0 +1,21 @@
+service: sls-url-shortener-layers
+app: serverless-url-shortener
+org: toporok
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: python3.8
+
+layers:
+  vendor-default:
+    path: vendor-default
+
+resources:
+  Outputs:
+    VendorDefaultLayerExport:
+      Value:
+        Ref: VendorDefaultLambdaLayer
+      Export:
+        Name: VendorDefaultLambdaLayer

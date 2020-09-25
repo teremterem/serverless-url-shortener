@@ -3,6 +3,11 @@
 
 ## TODO
 
+### Document
+
+- Decision to call the lambda layer with dependencies "vendor-default" (as well as intended organization of layers in
+  this project in general).
+
 ### Try out
 
 - AWS Lambda Layer(s) for Python dependencies
@@ -53,3 +58,4 @@
 - https://www.serverless.com/plugins/serverless-python-requirements
 - https://www.serverless.com/blog/serverless-python-packaging
 - https://github.com/lambci/docker-lambda
+- https://www.serverless.com/framework/docs/providers/aws/guide/variables/
