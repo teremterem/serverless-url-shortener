@@ -57,15 +57,11 @@ provider:
 #    - exclude-me.py
 #    - exclude-me-dir/**
 
-layers:
-  packages:
-    path: packages
-
 functions:
   hello:
     handler: handler.hello
     layers:
-      - {Ref: PackagesLambdaLayer}
+      - ${cf:sls-url-shortener-layers-${self:provider.stage}.VendorDefaultLayerExport}
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
