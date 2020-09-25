@@ -1,1 +1,1 @@
-GREETING = "GREETING from Lambda Layer"
+GREETING = "GREETING from Lambda Layer!"

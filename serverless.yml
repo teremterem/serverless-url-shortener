@@ -48,13 +48,13 @@ provider:
 #    variable1: value1
 
 # you can add packaging information here
-#package:
+package:
 #  include:
 #    - include-me.py
 #    - include-me-dir/**
-#  exclude:
-#    - exclude-me.py
-#    - exclude-me-dir/**
+  exclude:
+    - layers/**
+# TODO https://forum.serverless.com/t/package-excludes-do-not-seem-to-work/2314/5
 
 custom:
   layers-cf-stack: sls-url-shortener-layers-${self:provider.stage}
