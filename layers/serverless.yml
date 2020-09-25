@@ -9,7 +9,7 @@ provider:
   runtime: python3.8
 
 layers:
-  vendor-default:
+  vendorDefault:
     path: vendor-default
 
 resources:
