@@ -18,6 +18,10 @@
 - DynamoDB
 - Cognito
 
+---
+
+- https://www.serverless.com/blog/stages-and-environments#separate-aws-accounts
+
 ### Research (and document)
 
 - Test driven development (what would be the scope of test coverage?)
