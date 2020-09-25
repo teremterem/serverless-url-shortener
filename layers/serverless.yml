@@ -16,10 +16,10 @@ layers:
     name: ${self:service}-${self:provider.stage}-vendorDefault
     path: vendor-default
 
-#resources:
-#  Outputs:
-#    VendorDefaultLayerExport:
-#      Value:
-#        Ref: VendorDefault-${self:provider.stage}
-#      Export:
-#        Name: VendorDefault-${self:provider.stage}
+resources:
+  Outputs:
+    VendorDefaultLayerExport:
+      Value:
+        Ref: VendorDefaultLambdaLayer
+      Export:
+        Name: ${self:service}-${self:provider.stage}-vendorDefault

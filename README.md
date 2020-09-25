@@ -63,3 +63,4 @@
 - https://www.serverless.com/blog/serverless-python-packaging
 - https://github.com/lambci/docker-lambda
 - https://www.serverless.com/framework/docs/providers/aws/guide/variables/
+- https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/outputs-section-structure.html
