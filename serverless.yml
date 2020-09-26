@@ -23,7 +23,7 @@ frameworkVersion: '2'
 provider:
   name: aws
   runtime: python3.8
-  memorySize: ${param:LAMBDA_MEMORY_SIZE, 512}
+  memorySize: ${param:LAMBDA_MEMORY_SIZE, 512}  # FYI speed of cpu allocated for lambda is derived from memory size
   timeout: ${param:LAMBDA_TIMEOUT, 10}
 
   stage: ${opt:stage, 'dev'}
