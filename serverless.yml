@@ -24,7 +24,7 @@ provider:
   name: aws
   runtime: python3.8
   memorySize: ${param:LAMBDA_MEMORY_SIZE, 512}
-  #timeout: ${param:LAMBDA_TIMEOUT, 10}
+  timeout: ${param:LAMBDA_TIMEOUT, 10}
 
   stage: ${opt:stage, 'dev'}
   region: us-east-1
