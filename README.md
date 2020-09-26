@@ -21,6 +21,8 @@
 ---
 
 - https://www.serverless.com/blog/stages-and-environments#separate-aws-accounts
+- Try to combine lambdas and layers inside the same serverless? I have a suspicion that layers will not be redeployed
+ if they are not changed...
 
 ### Research (and document)
 
