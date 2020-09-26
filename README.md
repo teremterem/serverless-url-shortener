@@ -38,6 +38,7 @@
 
 - Set up an alert for lambdas to not go over certain runtime threshold to protect from possible inadvertent
   endless recursion of lambdas (a mistake that is not that hard to make but which may cost a lot - google it)
+  - FYI asynchronous invocations involve 2 retries by default in case of failure (configurable)
 - Warm up lambdas? (minor... google it)
 
 ### Research (extra)
