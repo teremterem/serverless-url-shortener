@@ -23,3 +23,5 @@ resources:
         Ref: VendorDefaultLambdaLayer
       Export:
         Name: ${self:service}-${self:provider.stage}-vendorDefault
+        # For each AWS account, Export names must be unique within a region.
+        # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/outputs-section-structure.html
