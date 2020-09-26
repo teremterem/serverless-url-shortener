@@ -40,7 +40,6 @@ package:
     - ./**
   include:
     - LICENSE
-    - function/__init__.py
 
 custom:
   layers-cf-stack: sls-url-shortener-layers-${self:provider.stage}
