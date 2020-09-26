@@ -4,12 +4,24 @@ from traceback import print_exc
 
 def hello(event, context):
     try:
-        from sample_module import GREETING
+        from ..sample_module import GREETING
         msg = GREETING
     except:
-        print('FAILED: from sample_module import GREETING')
+        print('FAILED: from ..sample_module import GREETING')
         print_exc()
-        msg = "Go Serverless v1.0! Your function executed successfully! (almost)"
+        try:
+            from .sample_module import GREETING
+            msg = GREETING
+        except:
+            print('FAILED: from .sample_module import GREETING')
+            print_exc()
+            try:
+                from sample_module import GREETING
+                msg = GREETING
+            except:
+                print('FAILED: from sample_module import GREETING')
+                print_exc()
+                msg = "Go Serverless v1.0! Your function executed successfully! (almost)"
     body = {
         "message": msg,
         "input": event
