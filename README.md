@@ -64,3 +64,4 @@
 - https://github.com/lambci/docker-lambda
 - https://www.serverless.com/framework/docs/providers/aws/guide/variables/
 - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/outputs-section-structure.html
+- https://forum.serverless.com/t/package-excludes-do-not-seem-to-work/2314/5

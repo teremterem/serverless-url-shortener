@@ -23,6 +23,8 @@ frameworkVersion: '2'
 provider:
   name: aws
   runtime: python3.8
+  memorySize: ${param:LAMBDA_MEMORY_SIZE, 512}
+  #timeout: ${param:LAMBDA_TIMEOUT, 10}
 
   stage: ${opt:stage, 'dev'}
   region: us-east-1
@@ -52,9 +54,9 @@ package:
 #  include:
 #    - include-me.py
 #    - include-me-dir/**
+  #individually: true  # I am not sure what this does exactly
   exclude:
-    - layers/**
-# TODO https://forum.serverless.com/t/package-excludes-do-not-seem-to-work/2314/5
+    - ./**
 
 custom:
   layers-cf-stack: sls-url-shortener-layers-${self:provider.stage}
@@ -64,6 +66,9 @@ functions:
     handler: handler.hello
     layers:
       - ${cf:${self:custom.layers-cf-stack}.VendorDefaultLayerExport}
+    package:
+      include:
+        - handler.py
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
