@@ -7,7 +7,7 @@ frameworkVersion: '2'
 provider:
   name: aws
   runtime: python3.8
-  memorySize: ${param:LAMBDA_MEMORY_SIZE, 512}  # FYI in Lambdas cpu speed is proportional to memory size
+  memorySize: ${param:LAMBDA_MEMORY_SIZE, 512}  # allocated Lambda CPU speed is proportional to memory size
   timeout: ${param:LAMBDA_TIMEOUT, 10}
   versionFunctions: ${strToBool(${param:VERSION_LAMBDAS, 'true'})}
 
