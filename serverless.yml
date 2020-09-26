@@ -54,9 +54,11 @@ package:
 #  include:
 #    - include-me.py
 #    - include-me-dir/**
-  #individually: true  # I am not sure what this does exactly
+  individually: true
   exclude:
     - ./**
+  include:
+    - LICENSE
 
 custom:
   layers-cf-stack: sls-url-shortener-layers-${self:provider.stage}
