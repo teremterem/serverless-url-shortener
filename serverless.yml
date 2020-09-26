@@ -46,7 +46,7 @@ custom:
 
 functions:
   hello:
-    handler: function.hello.hello
+    handler: function/hello.hello
     layers:
       - ${cf:${self:custom.layers-cf-stack}.VendorDefaultLayerExport}
     package:
