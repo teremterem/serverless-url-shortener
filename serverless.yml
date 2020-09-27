@@ -7,8 +7,6 @@ frameworkVersion: '2'
 provider:
   name: aws
   runtime: python3.8
-  memorySize: ${param:LAMBDA_MEMORY_SIZE, 512}  # allocated Lambda CPU speed is proportional to memory size
-  timeout: ${param:LAMBDA_TIMEOUT, 10}
   versionFunctions: ${strToBool(${param:VERSION_LAMBDAS, 'true'})}
 
   stage: ${opt:stage, 'dev'}
@@ -54,7 +52,7 @@ functions:
   hello:
     handler: function/hello.hello
     layers:
-      - {Ref: VendorDefaultLambdaLayer}
+      - { Ref: VendorDefaultLambdaLayer }
     package:
       include:
         - function/hello.py
