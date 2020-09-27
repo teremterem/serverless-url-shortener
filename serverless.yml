@@ -43,9 +43,9 @@ package:
     - LICENSE
 
 layers:
-  vendorDefault:
-    name: ${self:service}-${self:provider.stage}-vendorDefault
-    path: layer/vendor-default
+  commonCode:
+    name: ${self:service}-${self:provider.stage}-commonCode
+    path: layer/common-code
     retain: ${self:custom.retain-layer-versions}
     package:
       include:
@@ -55,7 +55,7 @@ functions:
   hello:
     handler: function/hello.hello
     layers:
-      - { Ref: VendorDefaultLambdaLayer }
+      - { Ref: CommonCodeLambdaLayer }
     package:
       include:
         - function/hello.py
