@@ -5,8 +5,6 @@
 
 ### Document
 
-- Decision to call the lambda layer with dependencies "vendor-default" (as well as intended organization of layers in
-  this project in general).
 - If you use serverless plugins then document how to install them from package.json using npm (altogether instead of
   one by one).
 
@@ -59,7 +57,9 @@
 
 ## Minor
 
-- Mention that layer/vendor-default/python/ should be added to a list of source directories in IDE?
+- Mention that layer/common-code/python/ should be added to a list of source directories in IDE?
+  - Do we even need common-code layer though? Why not just package py files together with lambdas that need them?
+    (Source files are always lightweight - not worth the trouble of deployment separation.)
 
 ## References
 
