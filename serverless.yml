@@ -32,6 +32,9 @@ provider:
 #  environment:
 #    variable1: value1
 
+custom:
+  retain-layer-versions: ${strToBool(${param:RETAIN_LAYER_VERSIONS, 'false'})}
+
 package:
   individually: true
   exclude:
@@ -43,7 +46,7 @@ layers:
   vendorDefault:
     name: ${self:service}-${self:provider.stage}-vendorDefault
     path: layer/vendor-default
-    retain: ${strToBool(${param:RETAIN_LAYER_VERSIONS, 'false'})}
+    retain: ${self:custom.retain-layer-versions}
     package:
       include:
         - ./**  # this is relative to layer path
