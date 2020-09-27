@@ -7,6 +7,8 @@
 
 - Decision to call the lambda layer with dependencies "vendor-default" (as well as intended organization of layers in
   this project in general).
+- If you use serverless plugins then document how to install them from package.json using npm (altogether instead of
+  one by one).
 
 ### Try out
 
@@ -43,11 +45,12 @@
 
 ### Research (extra)
 
-- Deploy only what needs to be deployed with lambda (use include/exclude directives in serverless.yml)
+- Try deploying NumPy in a lambda layer to see how it goes with a Python+C lib?
 
 ---
 
 - Is Async IO used somehow in Python AWS Lambdas? (Any external event loop?)
+  - https://www.trek10.com/blog/aws-lambda-python-asyncio
 - **Combine AWS Amplify with Serverless? (Is it still reasonable/viable to do so? The correspondent plugin repo is now
   archived for some reason...)**
   - https://www.serverless.com/plugins/aws-amplify-serverless-plugin
@@ -68,8 +71,8 @@
 - https://www.serverless.com/blog/publish-aws-lambda-layers-serverless-framework
 - https://www.serverless.com/framework/docs/providers/aws/guide/layers/
 - https://medium.com/@adhorn/getting-started-with-aws-lambda-layers-for-python-6e10b1f9a5d
-- https://www.serverless.com/plugins/serverless-python-requirements
-- https://www.serverless.com/blog/serverless-python-packaging
+- **https://www.serverless.com/plugins/serverless-python-requirements**
+- **https://www.serverless.com/blog/serverless-python-packaging**
 - https://github.com/lambci/docker-lambda
 - https://www.serverless.com/framework/docs/providers/aws/guide/variables/
 - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/outputs-section-structure.html
