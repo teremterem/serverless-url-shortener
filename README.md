@@ -60,6 +60,8 @@
 
 ## References
 
+- *https://guides.github.com/introduction/flow/ (see "Note of reflection" at the top of
+  https://nvie.com/posts/a-successful-git-branching-model/)*
 - https://medium.com/@mim3dot/dead-simple-aws-graphql-api-59db32510bfb
 - https://www.serverless.com/framework/docs/providers/aws/guide/credentials/
 - https://www.serverless.com/framework/docs/dashboard/access-roles/
