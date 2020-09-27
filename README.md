@@ -54,6 +54,10 @@
 - Compare Serverless to AWS Amplify?
   - https://medium.com/@mim3dot/aws-amplify-pros-and-cons-bf77a98da5db
 
+## Minor
+
+- Mention that layer/vendor-default/python/ should be added to a list of source directories in IDE?
+
 ## References
 
 - https://medium.com/@mim3dot/dead-simple-aws-graphql-api-59db32510bfb
@@ -68,3 +72,4 @@
 - https://www.serverless.com/framework/docs/providers/aws/guide/variables/
 - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/outputs-section-structure.html
 - https://forum.serverless.com/t/package-excludes-do-not-seem-to-work/2314/5
+- **https://www.serverless.com/blog/quick-tips-for-faster-serverless-development**

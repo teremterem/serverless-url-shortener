@@ -41,14 +41,20 @@ package:
   include:
     - LICENSE
 
-custom:
-  layers-cf-stack: sls-url-shortener-layers-${self:provider.stage}
+layers:
+  vendorDefault:
+    name: ${self:service}-${self:provider.stage}-vendorDefault
+    path: layer/vendor-default
+    retain: ${strToBool(${param:RETAIN_LAYER_VERSIONS, 'false'})}
+    package:
+      include:
+        - ./**  # this is relative to layer path
 
 functions:
   hello:
     handler: function/hello.hello
     layers:
-      - ${cf:${self:custom.layers-cf-stack}.VendorDefaultLayerExport}
+      - {Ref: VendorDefaultLambdaLayer}
     package:
       include:
         - function/hello.py
