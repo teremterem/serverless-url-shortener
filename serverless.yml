@@ -54,6 +54,7 @@ layers:
 functions:
   hello:
     handler: function/hello.hello
+#    module: function
     layers:
       - { Ref: CommonCodeLambdaLayer }
     package:

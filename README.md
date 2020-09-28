@@ -8,6 +8,24 @@
 - If you use serverless plugins then document how to install them from package.json using npm (altogether instead of
   one by one).
 
+### serverless-python-requirements plugin
+
+- !!! https://github.com/UnitedIncome/serverless-python-requirements#optimising-packaging-time
+- Use "dockerizePip: true" as default to be absolutely sure that dependencies are compiled exactly the same way on any
+  deploying machine? Yes! The plugin will try to use python binary to run pipenv (and the binary situation may be
+   different from OS to OS and from computer to computer).
+  - Would it also be preferable to use docker to run tests then (also to be absolutely sure it behaves exactly the
+    same way on any machine)?
+    https://github.com/UnitedIncome/serverless-python-requirements#native-code-dependencies-during-build
+  - *Why wouldn't you go as far as installing even serverless cli itself inside docker and then deploying from docker?
+    (What for, though? No, please don't do this...)*
+    - Here is a hint on why it may be needed:  
+      https://github.com/UnitedIncome/serverless-python-requirements#customize-python-executable  
+      https://github.com/UnitedIncome/serverless-python-requirements#applebeersnake-mac-brew-installed-python-notes
+      (actually - it is not needed - "dockerizePip: true" is enough)
+- Use "slim: true"? Once again, what for? Out of curiosity... If you are going to try it then make sure to try it
+  against, for ex., numpy as a library which has its' parts written in C.
+
 ### Try out
 
 - AWS Lambda Layer(s) for Python dependencies
@@ -28,6 +46,7 @@
 
 - Test driven development (what would be the scope of test coverage?)
   - pytest?
+    - for "common-code" layer (if still relevant): https://stackoverflow.com/a/3108301/2040370
   - separate unit tests from integration tests and let integration tests hit the real deployment? (what to do about
     setup/teardown for integration tests though?)
 - Debugging
@@ -73,8 +92,13 @@
 - https://medium.com/@adhorn/getting-started-with-aws-lambda-layers-for-python-6e10b1f9a5d
 - **https://www.serverless.com/plugins/serverless-python-requirements**
 - **https://www.serverless.com/blog/serverless-python-packaging**
-- https://github.com/lambci/docker-lambda
+- **https://github.com/lambci/docker-lambda**
 - https://www.serverless.com/framework/docs/providers/aws/guide/variables/
 - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/outputs-section-structure.html
 - https://forum.serverless.com/t/package-excludes-do-not-seem-to-work/2314/5
 - **https://www.serverless.com/blog/quick-tips-for-faster-serverless-development**
+
+---
+
+- *"Blank" python serverless app:
+  https://github.com/teremterem/serverless-url-shortener/commit/4bc94725745b153c8370d4583ac148e045975e66*
