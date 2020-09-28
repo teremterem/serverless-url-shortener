@@ -91,8 +91,10 @@
 - https://www.serverless.com/framework/docs/providers/aws/guide/layers/
 - https://medium.com/@adhorn/getting-started-with-aws-lambda-layers-for-python-6e10b1f9a5d
 - **https://www.serverless.com/plugins/serverless-python-requirements**
-- **https://www.serverless.com/blog/serverless-python-packaging**
-- **https://github.com/lambci/docker-lambda**
+  - https://www.serverless.com/blog/serverless-python-packaging
+  - **https://github.com/lambci/docker-lambda**
+  - https://medium.com/@dorian599/serverless-aws-lambda-layers-and-python-dependencies-92741138bf31
+  - **https://blog.francium.tech/deploying-python-packages-to-lambda-layers-using-serverless-plugin-c8fe1371e0b**
 - https://www.serverless.com/framework/docs/providers/aws/guide/variables/
 - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/outputs-section-structure.html
 - https://forum.serverless.com/t/package-excludes-do-not-seem-to-work/2314/5
