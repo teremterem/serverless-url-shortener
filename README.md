@@ -39,8 +39,12 @@
 ---
 
 - https://www.serverless.com/blog/stages-and-environments#separate-aws-accounts
-- Try to combine lambdas and layers inside the same serverless? I have a suspicion that layers will not be redeployed
- if they are not changed...
+- Additional URL Shortener requirement - preview long url page instead of following over to it. This will require
+  additional libs (which will help showcase working with lambdas with various dependencies):
+  - requests (to get the page without redirecting the user to it)
+  - some kind of html stripping lib ? there is no need to install anything from 3rd party, though -
+    https://stackoverflow.com/a/925630/2040370
+  - **use NumPy for no reason?**
 
 ### Research (and document)
 
@@ -95,6 +99,8 @@
   - **https://github.com/lambci/docker-lambda**
   - https://medium.com/@dorian599/serverless-aws-lambda-layers-and-python-dependencies-92741138bf31
   - **https://blog.francium.tech/deploying-python-packages-to-lambda-layers-using-serverless-plugin-c8fe1371e0b**
+  - https://github.com/UnitedIncome/serverless-python-requirements/issues/485#issuecomment-594184967
+    - https://github.com/UnitedIncome/serverless-python-requirements/pull/310
 - https://www.serverless.com/framework/docs/providers/aws/guide/variables/
 - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/outputs-section-structure.html
 - https://forum.serverless.com/t/package-excludes-do-not-seem-to-work/2314/5
