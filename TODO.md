@@ -1,6 +1,4 @@
 
-# Serverless URL Shortener
-
 ## TODO
 
 ### Document
