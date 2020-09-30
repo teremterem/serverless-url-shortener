@@ -17,6 +17,6 @@ RUN pipenv install --dev --deploy
 # TODO
 #  Should I figure how to mount layer built with serverless-python-requerements plugin to /opt instead of installing
 #  dependencies with pipenv right here?
-#  Alternatively, you can use pipenv -t to target the installation to /opt (or to /opt/python ?)
+#  ! Alternatively, you can use pipenv -t to target the installation to /opt (or to /opt/python ?)
 
 COPY . /var/task/
