@@ -5,10 +5,8 @@ services:
     # TODO build: .
     image: lambci/lambda:python3.8
     volumes:
-      # - function/hello.py:/var/task/function/hello.py:ro,delegated
-      - .:/var/task:ro,delegated
-      # TODO https://stackoverflow.com/a/42260979/2040370
+      # TODO package lambda with serverless (to make it's s_handler.py available)
+      - ./function/hello.py:/var/task/function/hello.py:ro,delegated
       # TODO package layer with serverless
       - ./layer/common-code:/opt:ro,delegated
-      # TODO package lambda with serverless (to make it's s_handler.py available)
     command: function/hello.hello '{"test":"test"}'
