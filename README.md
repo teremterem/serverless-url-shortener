@@ -4,6 +4,12 @@
 ## Test
 
 - TODO: involve coverage too
+- TODO? figure out how to fully emulate lambda environment using it's "bootstrap" in tests?
+  - https://phoenixnap.com/kb/docker-run-override-entrypoint
+  - https://github.com/lambci/docker-lambda/blob/master/python3.8/run/Dockerfile
+    - docker-compose run --rm --entrypoint /bin/bash test-python3.8-lambdas
+    - cat /var/runtime/bootstrap.py
+  - https://neuvector.com/cloud-security/how-aws-lambda-serverless-works/
 
 ## Debug
 
