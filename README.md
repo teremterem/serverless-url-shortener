@@ -3,7 +3,7 @@
 
 ## Test
 
-- TODO: https://github.com/lambci/docker-lambda#running-lambda-functions (do it using docker-compose)
+- TODO: involve coverage too
 
 ## Debug
 
@@ -17,3 +17,4 @@
 - https://docs.docker.com/docker-for-mac/osxfs-caching/
 - https://stackoverflow.com/a/49985823/2040370
 - https://stackoverflow.com/a/61218274/2040370
+- https://docs.docker.com/develop/develop-images/multistage-build/

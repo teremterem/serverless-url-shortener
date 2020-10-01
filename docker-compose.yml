@@ -1,12 +1,13 @@
 version: '3'
 
 services:
-  lambda-hello:
+  test-lambdas:
     # TODO build: .
     image: lambci/lambda:python3.8
     volumes:
-      # TODO package lambda with serverless (to make it's s_handler.py available)
-      - ./function/hello.py:/var/task/function/hello.py:ro,delegated
-      # TODO package layer with serverless
+      # TODO package lambda with serverless (to make it's s_handler.py available - are you sure you need this, though?)
+      - ./function:/var/task/function:ro,delegated
+      # TODO package layer with serverless (will be necessary if you use serverless-python-requirements plugin)
       - ./layer/common-code:/opt:ro,delegated
     command: function/hello.hello '{"test":"test"}'
+    # TODO figure how to send events like this from pytest?
