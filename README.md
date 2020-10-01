@@ -18,3 +18,5 @@
 - https://stackoverflow.com/a/49985823/2040370
 - https://stackoverflow.com/a/61218274/2040370
 - https://docs.docker.com/develop/develop-images/multistage-build/
+- https://docs.pytest.org/en/stable/goodpractices.html#tests-outside-application-code
+  - https://docs.pytest.org/en/stable/pythonpath.html#pytest-vs-python-m-pytest
