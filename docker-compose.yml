@@ -9,5 +9,5 @@ services:
       - ./function:/var/task/function:ro,delegated
       # TODO package layer with serverless (will be necessary if you use serverless-python-requirements plugin)
       - ./layer/common-code:/opt:ro,delegated
-    command: function/hello.hello '{"test":"test"}'
+    # command: function/hello.hello '{"test":"test"}'
     # TODO figure how to send events like this from pytest?
