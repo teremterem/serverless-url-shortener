@@ -4,7 +4,7 @@
 ## Run lambda locally
 
 ```
-docker-compose run --rm test-python3.8-lambdas function/hello.hello '{}'
+docker-compose run --rm test-python3.8-lambdas
 ```
 
 ## Test
