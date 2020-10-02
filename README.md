@@ -3,6 +3,10 @@
 
 ## Test
 
+- TODO: do ipdb right away to make your life easier !!!
+
+---
+
 - TODO: involve coverage too
 - TODO? figure out how to fully emulate lambda environment using it's "bootstrap" in tests?
   - https://phoenixnap.com/kb/docker-run-override-entrypoint
@@ -10,6 +14,10 @@
     - docker-compose run --rm --entrypoint /bin/bash test-python3.8-lambdas
     - cat /var/runtime/bootstrap.py
   - https://neuvector.com/cloud-security/how-aws-lambda-serverless-works/
+
+---
+
+- https://www.serverlessops.io/blog/aws-lambda-serverless-development-workflow-part2-testing-debugging
 
 ## Debug
 
@@ -26,3 +34,7 @@
 - https://docs.docker.com/develop/develop-images/multistage-build/
 - https://docs.pytest.org/en/stable/goodpractices.html#tests-outside-application-code
   - https://docs.pytest.org/en/stable/pythonpath.html#pytest-vs-python-m-pytest
+
+---
+
+- https://stackoverflow.com/a/62967574/2040370
