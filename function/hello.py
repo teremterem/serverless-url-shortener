@@ -4,6 +4,7 @@ from sample_module import GREETING
 
 
 def hello(event, context):
+    import ipdb; ipdb.set_trace()
     body = {
         "message": GREETING,
         "input": event

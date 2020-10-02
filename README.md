@@ -4,7 +4,7 @@
 ## Run lambda locally
 
 ```
-docker-compose run --rm test-python3.8-lambdas function/hello.hello '{}'
+docker-compose run --rm python3.8-lambda function/hello.hello '{}'
 ```
 
 ## Test
@@ -33,7 +33,7 @@ pipenv run python -m pytest
 
 Log in and see bootstrap.py:
 ```
-docker-compose run --rm --entrypoint /bin/bash test-python3.8-lambdas
+docker-compose run --rm --entrypoint /bin/bash python3.8-lambda
 cat /var/runtime/bootstrap.py
 ```
 
