@@ -7,6 +7,11 @@
 docker-compose run --rm python3.8-lambda function/hello.hello '{}'
 ```
 
+- **https://levelup.gitconnected.com/aws-lambda-offline-development-with-docker-6a8cf8b186e7**
+  - **https://github.com/vittorio-nardone/aws-lambda-offline-development/blob/master/Makefile**
+- https://blog.thundra.io/is-it-possible-to-debug-lambdas-locally
+- https://stackoverflow.com/questions/45928842/multiple-volumes-to-single-target-directory
+
 ## Test
 
 Temporary:
@@ -22,6 +27,10 @@ pipenv run python -m pytest
 - TODO: involve coverage too
 
 ## Debug
+
+- !!!!!!!!!! https://github.com/ionelmc/python-remote-pdb
+- https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-automated-tests.html
+- https://sanderknape.com/2018/02/comparing-aws-sam-with-serverless-framework/
 
 # Log into local lambda docker
 
@@ -54,3 +63,5 @@ cat /var/runtime/bootstrap.py
 ---
 
 - https://stackoverflow.com/a/62967574/2040370
+- give AWS SAM a shot?
+  - https://medium.com/better-programming/how-to-deploy-a-local-serverless-application-with-aws-sam-b7b314c3048c
