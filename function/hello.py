@@ -6,7 +6,7 @@ from sample_module import GREETING
 def hello(event, context):
     # breakpoint()
     from remote_pdb import RemotePdb
-    RemotePdb('0.0.0.0', 12345).set_trace()
+    RemotePdb('127.0.0.1', 4444).set_trace()
     body = {
         "message": GREETING,
         "input": event

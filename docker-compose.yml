@@ -13,7 +13,7 @@ services:
       - ./layer/common-code:/opt:ro,delegated
       # TODO make sure multiple layers can be merged using mounting
     ports:
-      - "12345:12345"
+      - "4444:4444"
     environment:
       - PYTHONBREAKPOINT=remote_pdb.set_trace
       - REMOTE_PDB_HOST=127.0.0.1
