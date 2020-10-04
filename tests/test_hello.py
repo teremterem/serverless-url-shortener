@@ -22,7 +22,7 @@ def test_hello_inside():
 
 def invoke_lambda_plain(handler, event):
     with os.popen(
-            f'docker-compose run --rm test-python3.8-lambdas {handler} {shlex.quote(json.dumps(event))}'
+            f'docker-compose run --rm python3.8-lambda {handler} {shlex.quote(json.dumps(event))}'
     ) as response:
         return json.load(response)
 
