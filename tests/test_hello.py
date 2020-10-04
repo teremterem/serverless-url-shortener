@@ -50,7 +50,7 @@ def invoke_lambda(handler, event):
             response['body'] = json.loads(response['body'])
         except (TypeError, ValueError):
             # no, it is not... but that's fine too!
-            print('WARNING! Failed to parse body of http lambda response as json', exc_info=True)
+            print('WARNING! Failed to parse body of http lambda response as json', file=sys.stderr)
             traceback.print_exc()
     return response
 
