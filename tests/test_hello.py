@@ -1,7 +1,7 @@
 import json
-import logging
 import shlex
 import subprocess
+import sys
 import traceback
 from contextlib import contextmanager
 
@@ -23,6 +23,7 @@ def invoke_lambda_plain(handler, event):
     @contextmanager
     def _spawn_lambda():
         command = f'docker-compose run --rm python3.8-lambda {handler} {shlex.quote(json.dumps(event))}'
+        print(f'\n\n\n{command}\n', file=sys.stderr)
 
         subp = subprocess.Popen(
             command,
@@ -35,7 +36,7 @@ def invoke_lambda_plain(handler, event):
         finally:
             subp.stdout.close()
             exit_code = subp.wait()
-            print(f'\n{command}\nEXIT CODE: {exit_code}\n')
+            print(f'\nEXIT CODE: {exit_code}\n\n', file=sys.stderr)
 
     with _spawn_lambda() as lambda_output:
         return json.load(lambda_output)
