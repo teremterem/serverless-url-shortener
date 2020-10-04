@@ -16,7 +16,6 @@ logger = logging.getLogger(__name__)
 @pytest.mark.skip
 def test_hello_inside():
     result = hello({}, None)
-    # TODO use labci to emulate context ?
     assert result == {'body': '{"message": "GREETING from Lambda Layer!", "input": {}}', 'statusCode': 200}
 
 
@@ -39,6 +38,7 @@ def invoke_lambda(handler, event):
     return response
 
 
+# @pytest.mark.skip
 def test_hello():
     assert invoke_lambda('function/hello.hello', {'a': ['b']}) == \
            {'body': {'input': {'a': ['b']}, 'message': 'GREETING from Lambda Layer!'}, 'statusCode': 200}

@@ -31,6 +31,8 @@ pipenv run python -m pytest
 - !!!!!!!!!! https://github.com/ionelmc/python-remote-pdb
 - https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-automated-tests.html
 - https://sanderknape.com/2018/02/comparing-aws-sam-with-serverless-framework/
+- https://github.com/pypa/pipenv/issues/2206
+  - https://github.com/pypa/pipenv/issues/746
 
 # Log into local lambda docker
 

@@ -12,8 +12,13 @@ services:
       # TODO package layer with serverless (will be necessary if you use serverless-python-requirements plugin)
       - ./layer/common-code:/opt:ro,delegated
       # TODO make sure multiple layers can be merged using mounting
+    ports:
+      - "12345:12345"
+    environment:
+      - PYTHONBREAKPOINT=remote_pdb.set_trace
+      - REMOTE_PDB_HOST=127.0.0.1
+      - REMOTE_PDB_PORT=4444
     # command: function/hello.hello '{"test":"test"}'
-    # TODO figure how to send events like this from pytest?
 
 #  python3.8-lambda-unit-tests:
 #    extends: python3.8-lambda
