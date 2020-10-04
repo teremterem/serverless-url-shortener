@@ -1,7 +1,9 @@
 import json
 import logging
-import os
 import shlex
+import subprocess
+import sys
+from contextlib import contextmanager
 
 import pytest
 
@@ -20,10 +22,32 @@ def test_hello_inside():
 
 
 def invoke_lambda_plain(handler, event):
+    """
     with os.popen(
             f'docker-compose run --rm python3.8-lambda {handler} {shlex.quote(json.dumps(event))}'
     ) as response:
         return json.load(response)
+    """
+
+    @contextmanager
+    def _spawn_lambda():
+        command = f'docker-compose run --rm python3.8-lambda {handler} {shlex.quote(json.dumps(event))}'
+
+        subp = subprocess.Popen(
+            command,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=sys.stdout,  # TODO try stderr
+        )
+        try:  # https://docs.python.org/3/library/contextlib.html#contextlib.contextmanager
+            yield subp.stdout
+        finally:
+            subp.stdout.close()
+            exit_code = subp.wait()
+            logger.debug('%s\nEXIT CODE: %s', command, exit_code)
+
+    with _spawn_lambda() as lambda_output:
+        return json.load(lambda_output)
 
 
 def invoke_lambda(handler, event):
