@@ -59,4 +59,4 @@ def invoke_lambda(handler, event):
 # @pytest.mark.skip
 def test_hello():
     assert invoke_lambda('function/hello.hello', {'a': ['b']}) == \
-           {'body': {'input': {'a': ['b']}, 'message': 'GREETING from Lambda Layer!'}, 'statusCode': 200}
+           {'body': {'input': {'a': ['b']}, 'message': 'GREETING from Lambda Layer! REAL'}, 'statusCode': 200}
