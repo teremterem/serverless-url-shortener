@@ -2,14 +2,12 @@ import json
 import logging
 import shlex
 import subprocess
-import sys
+import traceback
 from contextlib import contextmanager
 
 import pytest
 
 from function.hello import hello
-
-logger = logging.getLogger(__name__)
 
 
 # TODO either use skipif (if possible) or a custom mark to separate between unit and integration tests
@@ -22,13 +20,6 @@ def test_hello_inside():
 
 
 def invoke_lambda_plain(handler, event):
-    """
-    with os.popen(
-            f'docker-compose run --rm python3.8-lambda {handler} {shlex.quote(json.dumps(event))}'
-    ) as response:
-        return json.load(response)
-    """
-
     @contextmanager
     def _spawn_lambda():
         command = f'docker-compose run --rm python3.8-lambda {handler} {shlex.quote(json.dumps(event))}'
@@ -36,15 +27,15 @@ def invoke_lambda_plain(handler, event):
         subp = subprocess.Popen(
             command,
             shell=True,
+            stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
-            stderr=sys.stdout,  # TODO try stderr
         )
         try:  # https://docs.python.org/3/library/contextlib.html#contextlib.contextmanager
             yield subp.stdout
         finally:
             subp.stdout.close()
             exit_code = subp.wait()
-            logger.debug('%s\nEXIT CODE: %s', command, exit_code)
+            print(f'\n{command}\nEXIT CODE: {exit_code}\n')
 
     with _spawn_lambda() as lambda_output:
         return json.load(lambda_output)
@@ -58,7 +49,8 @@ def invoke_lambda(handler, event):
             response['body'] = json.loads(response['body'])
         except (TypeError, ValueError):
             # no, it is not... but that's fine too!
-            logger.debug('Failed to parse body of http lambda response as json', exc_info=True)
+            print('WARNING! Failed to parse body of http lambda response as json', exc_info=True)
+            traceback.print_exc()
     return response
 
 
