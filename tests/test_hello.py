@@ -22,7 +22,8 @@ def test_hello_inside():
 def invoke_lambda_plain(handler, event):
     @contextmanager
     def _spawn_lambda():
-        command = f'docker-compose run --rm python3.8-lambda {handler} {shlex.quote(json.dumps(event))}'
+        command = f'docker-compose run --rm --service-ports python3.8-lambda ' \
+                  f'{handler} {shlex.quote(json.dumps(event))}'
         print(f'\n\n\n{command}\n', file=sys.stderr)
 
         subp = subprocess.Popen(

@@ -4,8 +4,8 @@ services:
   python3.8-lambda:
     # TODO build: .
     image: lambci/lambda:python3.8
-    stdin_open: true  # docker run -i  # needed to enable debugging with pdb/ipdb
-    tty: true  # docker run -t  # needed to enable debugging with pdb/ipdb
+#    stdin_open: true  # docker run -i  # needed to enable debugging with pdb/ipdb
+#    tty: true  # docker run -t  # needed to enable debugging with pdb/ipdb
     volumes:
       # TODO package lambda with serverless (to make it's s_handler.py available - are you sure you need this, though?)
       - ./function:/var/task/function:ro,delegated
@@ -16,7 +16,7 @@ services:
       - "4444:4444"
     environment:
       - PYTHONBREAKPOINT=remote_pdb.set_trace
-      - REMOTE_PDB_HOST=127.0.0.1
+      - REMOTE_PDB_HOST=0.0.0.0
       - REMOTE_PDB_PORT=4444
     # command: function/hello.hello '{"test":"test"}'
 
