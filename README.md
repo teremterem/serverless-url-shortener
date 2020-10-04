@@ -11,4 +11,6 @@
 docker-compose run --rm python3.8-lambda function/hello.hello '{}'
 ```
 
-- TODO redirect stderr to some kind of pytest logger ? or simply to stderr or stdout ?
+- https://stackoverflow.com/a/58630093/2040370
+- https://docs.docker.com/compose/compose-file/#network_mode
+- https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-debugging-python.html#serverless-sam-cli-using-debugging-python-ptvsd
