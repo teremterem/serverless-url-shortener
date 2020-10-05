@@ -1,6 +1,16 @@
 
 # Serverless URL Shortener
 
+## Test lambdas locally
+
+```
+pipenv run python -m pytest
+```
+OR
+```
+pipenv run python -m pytest -svv
+```
+
 ## Debug lambdas locally
 
 - https://github.com/ionelmc/python-remote-pdb#integration-with-breakpoint-in-python-37
