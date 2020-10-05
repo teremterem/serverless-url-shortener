@@ -1,12 +1,12 @@
 import json
 
-from sample_module import GREETING, get_real
+from sample_module import greeting, get_real
 
 
 def hello(event, context):
     # breakpoint()
     body = {
-        "message": GREETING + ' ' + get_real(),
+        "message": f'{greeting()} {get_real()}',
         "input": event
     }
 

@@ -5,18 +5,15 @@ import sys
 import traceback
 from contextlib import contextmanager
 
-import pytest
-
 from function.hello import hello
 
 
 # TODO either use skipif (if possible) or a custom mark to separate between unit and integration tests
 #  https://docs.pytest.org/en/stable/mark.html
 #  or separate unit and integration tests in some other way ?
-@pytest.mark.skip
 def test_hello_inside():
     result = hello({}, None)
-    assert result == {'body': '{"message": "GREETING from Lambda Layer!", "input": {}}', 'statusCode': 200}
+    assert result == {'body': '{"message": "GREETING from Lambda Layer! REAL", "input": {}}', 'statusCode': 200}
 
 
 def invoke_lambda_plain(handler, event):
@@ -58,5 +55,5 @@ def invoke_lambda(handler, event):
 
 # @pytest.mark.skip
 def test_hello():
-    assert invoke_lambda('function/hello.hello', {'a': ['b']}) == \
-           {'body': {'input': {'a': ['b']}, 'message': 'GREETING from Lambda Layer! REAL'}, 'statusCode': 200}
+    assert invoke_lambda('tests/mocking_handlers.mocking_hello', {'a': ['b']}) == \
+           {'body': {'input': {'a': ['b']}, 'message': 'aloha fake'}, 'statusCode': 200}
