@@ -1,30 +1,43 @@
 import json
-import logging
-import os
 import shlex
-
-import pytest
+import subprocess
+import sys
+import traceback
+from contextlib import contextmanager
 
 from function.hello import hello
-
-logger = logging.getLogger(__name__)
 
 
 # TODO either use skipif (if possible) or a custom mark to separate between unit and integration tests
 #  https://docs.pytest.org/en/stable/mark.html
 #  or separate unit and integration tests in some other way ?
-@pytest.mark.skip
 def test_hello_inside():
     result = hello({}, None)
-    # TODO use labci to emulate context ?
-    assert result == {'body': '{"message": "GREETING from Lambda Layer!", "input": {}}', 'statusCode': 200}
+    assert result == {'body': '{"message": "GREETING from Lambda Layer! REAL", "input": {}}', 'statusCode': 200}
 
 
 def invoke_lambda_plain(handler, event):
-    with os.popen(
-            f'docker-compose run --rm test-python3.8-lambdas {handler} {shlex.quote(json.dumps(event))}'
-    ) as response:
-        return json.load(response)
+    @contextmanager
+    def _spawn_lambda():
+        command = f'docker-compose run --rm --service-ports python3.8-lambda ' \
+                  f'{handler} {shlex.quote(json.dumps(event))}'
+        print(f'\n\n\n{command}\n', file=sys.stderr)
+
+        subp = subprocess.Popen(
+            command,
+            shell=True,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+        )
+        try:  # https://docs.python.org/3/library/contextlib.html#contextlib.contextmanager
+            yield subp.stdout
+        finally:
+            subp.stdout.close()
+            exit_code = subp.wait()
+            print(f'\nEXIT CODE: {exit_code}\n\n', file=sys.stderr)
+
+    with _spawn_lambda() as lambda_output:
+        return json.load(lambda_output)
 
 
 def invoke_lambda(handler, event):
@@ -35,10 +48,12 @@ def invoke_lambda(handler, event):
             response['body'] = json.loads(response['body'])
         except (TypeError, ValueError):
             # no, it is not... but that's fine too!
-            logger.debug('Failed to parse body of http lambda response as json', exc_info=True)
+            print('WARNING! Failed to parse body of http lambda response as json', file=sys.stderr)
+            traceback.print_exc()
     return response
 
 
+# @pytest.mark.skip
 def test_hello():
-    assert invoke_lambda('function/hello.hello', {'a': ['b']}) == \
-           {'body': {'input': {'a': ['b']}, 'message': 'GREETING from Lambda Layer!'}, 'statusCode': 200}
+    assert invoke_lambda('tests/mocking_handlers.mocking_hello', {'a': ['b']}) == \
+           {'body': {'input': {'a': ['b']}, 'message': 'aloha fake'}, 'statusCode': 200}

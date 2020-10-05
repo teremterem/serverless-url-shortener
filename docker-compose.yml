@@ -1,13 +1,30 @@
 version: '3'
 
 services:
-  test-python3.8-lambdas:
+  python3.8-lambda:
     # TODO build: .
     image: lambci/lambda:python3.8
+#    stdin_open: true  # docker run -i  # needed to enable debugging with pdb/ipdb
+#    tty: true  # docker run -t  # needed to enable debugging with pdb/ipdb
     volumes:
-      # TODO package lambda with serverless (to make it's s_handler.py available - are you sure you need this, though?)
+      # TODO package lambda with serverless (to make it's s_handler.py available - are you sure you need this, though?
+      #  no, you don't! or do you? look into s_handler.py to understand what does it do...)
       - ./function:/var/task/function:ro,delegated
+      - ./tests:/var/task/tests:ro,delegated
       # TODO package layer with serverless (will be necessary if you use serverless-python-requirements plugin)
       - ./layer/common-code:/opt:ro,delegated
+      # TODO make sure multiple layers can be merged using mounting (or just merge them into one using docker)
+    ports:
+      - "4444:4444"
+    environment:
+      - PYTHONBREAKPOINT=remote_pdb.set_trace
+      - REMOTE_PDB_HOST=0.0.0.0
+      - REMOTE_PDB_PORT=4444
     # command: function/hello.hello '{"test":"test"}'
-    # TODO figure how to send events like this from pytest?
+
+#  python3.8-lambda-unit-tests:
+#    extends: python3.8-lambda
+#    volumes:
+#      - .:/var/task:ro,delegated
+#      - ./layer/common-code:/var/task:ro,delegated
+#    entrypoint: python -m pytest
