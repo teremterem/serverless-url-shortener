@@ -1,4 +1,5 @@
 import json
+import logging
 import shlex
 import subprocess
 import sys
@@ -6,6 +7,8 @@ import traceback
 from contextlib import contextmanager
 
 from function.hello import hello
+
+logger = logging.getLogger(__name__)
 
 
 # TODO either use skipif (if possible) or a custom mark to separate between unit and integration tests
@@ -21,7 +24,14 @@ def invoke_lambda_plain(handler, event):
     def _spawn_lambda():
         command = f'docker-compose run --rm --service-ports python3.8-lambda ' \
                   f'{handler} {shlex.quote(json.dumps(event))}'
-        print(f'\n\n\n{command}\n', file=sys.stderr)
+        logger.info(
+            '\n'
+            '\n'
+            'LOCAL LAMBDA RUN\n'
+            '%s\n'
+            'BEGIN\n',
+            command,
+        )
 
         subp = subprocess.Popen(
             command,
@@ -34,7 +44,16 @@ def invoke_lambda_plain(handler, event):
         finally:
             subp.stdout.close()
             exit_code = subp.wait()
-            print(f'\nEXIT CODE: {exit_code}\n\n', file=sys.stderr)
+            logger.log(
+                logging.INFO if exit_code == 0 else logging.ERROR,
+                '\n'
+                '\n'
+                'LOCAL LAMBDA RUN\n'
+                '%s\n'
+                'EXIT CODE: %s\n',
+                command,
+                exit_code,
+            )
 
     with _spawn_lambda() as lambda_output:
         return json.load(lambda_output)
