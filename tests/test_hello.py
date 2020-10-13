@@ -2,8 +2,6 @@ import json
 import logging
 import shlex
 import subprocess
-import sys
-import traceback
 from contextlib import contextmanager
 
 from function.hello import hello
