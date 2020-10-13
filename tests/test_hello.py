@@ -31,17 +31,17 @@ def invoke_lambda_plain(handler, event):
             command,
         )
 
-        subp = subprocess.Popen(
+        subproc = subprocess.Popen(
             command,
             shell=True,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
         )
         try:  # https://docs.python.org/3/library/contextlib.html#contextlib.contextmanager
-            yield subp.stdout
+            yield subproc.stdout
         finally:
-            subp.stdout.close()
-            exit_code = subp.wait()
+            subproc.stdout.close()
+            exit_code = subproc.wait()
             logger.log(
                 logging.INFO if exit_code == 0 else logging.ERROR,
                 '\n'
