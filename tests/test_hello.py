@@ -18,11 +18,13 @@ def test_hello_inside():
 
 
 def invoke_lambda_plain(handler, event):
+    # TODO turn it into an object instantiated by a fixture -
+    #  this way it will be easy to make it configurable/reusable
     @contextmanager
     def _spawn_lambda():
         command = f'docker-compose run --rm --service-ports python3.8-lambda ' \
                   f'{handler} {shlex.quote(json.dumps(event))}'
-        logger.info(
+        logger.debug(
             '\n'
             '\n'
             'LOCAL LAMBDA RUN\n'
@@ -38,12 +40,14 @@ def invoke_lambda_plain(handler, event):
             stdout=subprocess.PIPE,
         )
         try:  # https://docs.python.org/3/library/contextlib.html#contextlib.contextmanager
-            yield subproc.stdout
+            yield subproc.stdout, command
         finally:
             subproc.stdout.close()
+
             exit_code = subproc.wait()
+            # TODO make expected exit code configurable and throw AssertionError from here if it is not met
             logger.log(
-                logging.INFO if exit_code == 0 else logging.ERROR,
+                logging.DEBUG if exit_code == 0 else logging.ERROR,
                 '\n'
                 '\n'
                 'LOCAL LAMBDA RUN\n'
@@ -53,8 +57,21 @@ def invoke_lambda_plain(handler, event):
                 exit_code,
             )
 
-    with _spawn_lambda() as lambda_output:
-        return json.load(lambda_output)
+    with _spawn_lambda() as (lambda_output, command):
+        output_bytes = lambda_output.read()
+
+        logger.debug(
+            '\n'
+            '\n'
+            'LOCAL LAMBDA RUN\n'
+            '%s\n'
+            'OUTPUT\n'
+            '%s\n'
+            'END OUTPUT\n',
+            command,
+            output_bytes,  # TODO how to present it ? pformat of already parsed json ?
+        )
+    return json.loads(output_bytes)
 
 
 def invoke_lambda(handler, event):
