@@ -45,12 +45,6 @@ class LocalLambdaInvoker:
         self.expected_exit_code = expected_exit_code
 
         self.shell_command = self._build_shell_command()
-        self._lambda_run_message = (
-            '\n'
-            '\n'
-            'LOCAL LAMBDA RUN\n'
-            '%(shell_command)s\n'
-        )
 
     def invoke(self, json_in_http_body=_JSON_IN_HTTP_BODY_DEFAULT):
         output_json = json.loads(self.invoke_plain())
@@ -74,7 +68,7 @@ class LocalLambdaInvoker:
                 logger.warning(
                     'Failed to parse body of http lambda response as json. To get rid of this warning (if it is not an '
                     'http lambda or its response body is not supposed to be json) set json_in_http_body to False.' +
-                    self._lambda_run_message +
+                    self._LAMBDA_RUN_MESSAGE +
                     output_json_message,
                     {
                         'shell_command': self.shell_command,
@@ -84,7 +78,7 @@ class LocalLambdaInvoker:
                 )
         elif logger.isEnabledFor(logging.DEBUG):
             logger.debug(
-                self._lambda_run_message +
+                self._LAMBDA_RUN_MESSAGE +
                 output_json_message,
                 {
                     'shell_command': self.shell_command,
@@ -99,7 +93,7 @@ class LocalLambdaInvoker:
             output_bytes = lambda_output.read()
 
         logger.debug(
-            self._lambda_run_message +
+            self._LAMBDA_RUN_MESSAGE +
             'OUTPUT\n'
             '%(output_bytes)s\n'
             'END OUTPUT\n',
@@ -117,7 +111,7 @@ class LocalLambdaInvoker:
     @contextmanager
     def _spawn_docker_service(self):
         logger.debug(
-            self._lambda_run_message +
+            self._LAMBDA_RUN_MESSAGE +
             'BEGIN\n',
             {
                 'shell_command': self.shell_command,
@@ -140,7 +134,7 @@ class LocalLambdaInvoker:
                 raise AssertionError(
                     (
                             'ACTUAL EXIT CODE (%(actual_exit_code)s) != EXPECTED EXIT CODE (%(expected_exit_code)s)' +
-                            self._lambda_run_message
+                            self._LAMBDA_RUN_MESSAGE
                     ) % {
                         'shell_command': self.shell_command,
                         'expected_exit_code': self.expected_exit_code,
@@ -155,13 +149,20 @@ class LocalLambdaInvoker:
 
             logger.log(
                 log_level,
-                self._lambda_run_message +
+                self._LAMBDA_RUN_MESSAGE +
                 'EXIT CODE: %(exit_code)s\n',
                 {
                     'shell_command': self.shell_command,
                     'exit_code': exit_code,
                 }
             )
+
+    _LAMBDA_RUN_MESSAGE = (
+        '\n'
+        '\n'
+        'LOCAL LAMBDA RUN\n'
+        '%(shell_command)s\n'
+    )
 
 
 _LocalLambdaInvoker = LocalLambdaInvoker
