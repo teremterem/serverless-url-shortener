@@ -45,7 +45,7 @@ class LocalLambdaInvoker:
             '\n'
             '\n'
             'LOCAL LAMBDA RUN\n'
-            '{shell_command}\n'
+            '%(shell_command)s\n'
         )
 
     def invoke(self, json_in_http_body=True):
@@ -62,7 +62,7 @@ class LocalLambdaInvoker:
 
         output_json_message = (
             'OUTPUT JSON\n'
-            '{output_json}\n'
+            '%(output_json)s\n'
             'END OUTPUT JSON\n'
         )
         if json_in_http_body_exc:
@@ -72,16 +72,20 @@ class LocalLambdaInvoker:
                     'http lambda or its response body is not supposed to be json) set json_in_http_body to False.' +
                     self._lambda_run_message +
                     output_json_message,
-                    shell_command=self.shell_command,
-                    output_json=pformat(output_json),
-                    exc_info=json_in_http_body_exc,
+                    {
+                        'shell_command': self.shell_command,
+                        'output_json': pformat(output_json),
+                        'exc_info': json_in_http_body_exc,
+                    }
                 )
         elif logger.isEnabledFor(logging.DEBUG):
             logger.debug(
                 self._lambda_run_message +
                 output_json_message,
-                shell_command=self.shell_command,
-                output_json=pformat(output_json)
+                {
+                    'shell_command': self.shell_command,
+                    'output_json': pformat(output_json),
+                }
             )
 
         return output_json
@@ -93,10 +97,12 @@ class LocalLambdaInvoker:
             logger.debug(
                 self._lambda_run_message +
                 'OUTPUT\n'
-                '{output_bytes}\n'
+                '%(output_bytes)s\n'
                 'END OUTPUT\n',
-                shell_command=self.shell_command,
-                output_bytes=pformat(output_bytes)
+                {
+                    'shell_command': self.shell_command,
+                    'output_bytes': output_bytes,
+                }
             )
             return output_bytes
 
@@ -109,7 +115,9 @@ class LocalLambdaInvoker:
         logger.debug(
             self._lambda_run_message +
             'BEGIN\n',
-            shell_command=self.shell_command,
+            {
+                'shell_command': self.shell_command,
+            }
         )
 
         subproc = subprocess.Popen(
@@ -127,8 +135,8 @@ class LocalLambdaInvoker:
             if self.expected_exit_code is not None and exit_code != self.expected_exit_code:
                 raise AssertionError((
                         self._lambda_run_message +
-                        'EXPECTED EXIT CODE: {expected_exit_code}\n' +
-                        'ACTUAL EXIT CODE: {actual_exit_code}\n' +
+                        'EXPECTED EXIT CODE: %(expected_exit_code)s\n' +
+                        'ACTUAL EXIT CODE: %(actual_exit_code)s\n' +
                         '(NOTE: to turn off this assertion set expected_exit_code to None)\n'
                 ).format(
                     shell_command=self.shell_command,
@@ -137,9 +145,11 @@ class LocalLambdaInvoker:
                 ))
             logger.debug(
                 self._lambda_run_message +
-                'EXIT CODE: {exit_code}\n',
-                shell_command=self.shell_command,
-                exit_conde=exit_code,
+                'EXIT CODE: %(exit_code)s\n',
+                {
+                    'shell_command': self.shell_command,
+                    'exit_conde': exit_code,
+                }
             )
 
 

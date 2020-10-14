@@ -1,5 +1,5 @@
 from function.hello import hello
-from .local_lambda import fix_json_in_body
+from tests.local_lambda import fix_json_in_body
 
 
 def test_hello_inside():
