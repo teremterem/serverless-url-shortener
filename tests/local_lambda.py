@@ -148,7 +148,7 @@ class LocalLambdaInvoker:
                 'EXIT CODE: %(exit_code)s\n',
                 {
                     'shell_command': self.shell_command,
-                    'exit_conde': exit_code,
+                    'exit_code': exit_code,
                 }
             )
 
