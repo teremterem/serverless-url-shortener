@@ -1,15 +1,12 @@
-import logging
-
 from function.hello import hello
-
-logger = logging.getLogger(__name__)
+from .local_lambda import fix_json_in_body
 
 
 def test_hello_inside():
-    result = hello({}, None)
+    result = fix_json_in_body(hello({}, None))
     assert result == {'body': '{"message": "GREETING from Lambda Layer! REAL", "input": {}}', 'statusCode': 200}
 
 
-def test_hello():
-    assert invoke_lambda('tests/mocking_handlers.mocking_hello', {'a': ['b']}) == \
+def test_hello(py38lambda):
+    assert py38lambda.invoke('tests/mocking_handlers.mocking_hello', {'a': ['b']}) == \
            {'body': {'input': {'a': ['b']}, 'message': 'aloha fake'}, 'statusCode': 200}

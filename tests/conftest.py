@@ -1,4 +1,13 @@
 import sys
 
-sys.path.append('layer/common-code/python')
+import pytest
+
+from .local_lambda import LocalLambda
+
 # TODO get rid of this when docker-lambda is setup properly
+sys.path.append('layer/common-code/python')
+
+
+@pytest.fixture
+def py38lambda():
+    return LocalLambda

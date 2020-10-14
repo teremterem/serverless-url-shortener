@@ -26,6 +26,13 @@ class LocalLambda:
         return _LocalLambdaInvoker(self, handler, event, expected_exit_code)
 
 
+def fix_json_in_body(lambda_response_json):
+    body = lambda_response_json.get('body')
+    if body:
+        lambda_response_json['body'] = json.loads(body)
+    return lambda_response_json
+
+
 class LocalLambdaInvoker:
     def __init__(self, local_lambda, handler, event, expected_exit_code):
         self.local_lambda = local_lambda
@@ -45,10 +52,10 @@ class LocalLambdaInvoker:
         output_json = json.loads(self.invoke_plain())
 
         json_in_http_body_exc = False
-        if json_in_http_body and 'body' in output_json:
+        if json_in_http_body:
             try:
                 # assume it is an http lambda that returns json in its response body
-                output_json['body'] = json.loads(output_json['body'])
+                fix_json_in_body(output_json)
             except (TypeError, ValueError) as e:
                 # no, it is not... but that's fine too!
                 json_in_http_body_exc = e
