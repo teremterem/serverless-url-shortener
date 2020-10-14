@@ -9,9 +9,6 @@ from function.hello import hello
 logger = logging.getLogger(__name__)
 
 
-# TODO either use skipif (if possible) or a custom mark to separate between unit and integration tests
-#  https://docs.pytest.org/en/stable/mark.html
-#  or separate unit and integration tests in some other way ?
 def test_hello_inside():
     result = hello({}, None)
     assert result == {'body': '{"message": "GREETING from Lambda Layer! REAL", "input": {}}', 'statusCode': 200}
@@ -90,7 +87,6 @@ def invoke_lambda(handler, event):
     return response
 
 
-# @pytest.mark.skip
 def test_hello():
     assert invoke_lambda('tests/mocking_handlers.mocking_hello', {'a': ['b']}) == \
            {'body': {'input': {'a': ['b']}, 'message': 'aloha fake'}, 'statusCode': 200}
