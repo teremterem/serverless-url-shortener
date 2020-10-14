@@ -7,12 +7,14 @@ from pprint import pformat
 
 logger = logging.getLogger(__name__)
 
+_JSON_IN_HTTP_BODY_DEFAULT = True
+
 
 class LocalLambda:
     def __init__(self, docker_compose_service):
         self.docker_compose_service = docker_compose_service
 
-    def invoke(self, handler, event, expected_exit_code=0, json_in_http_body=True):
+    def invoke(self, handler, event, expected_exit_code=0, json_in_http_body=_JSON_IN_HTTP_BODY_DEFAULT):
         return self.invoker(
             handler, event, expected_exit_code=expected_exit_code
         ).invoke(json_in_http_body=json_in_http_body)
@@ -48,7 +50,7 @@ class LocalLambdaInvoker:
             '%(shell_command)s\n'
         )
 
-    def invoke(self, json_in_http_body=True):
+    def invoke(self, json_in_http_body=_JSON_IN_HTTP_BODY_DEFAULT):
         output_json = json.loads(self.invoke_plain())
 
         json_in_http_body_exc = False
@@ -94,17 +96,17 @@ class LocalLambdaInvoker:
         with self._spawn_docker_service() as lambda_output:
             output_bytes = lambda_output.read()
 
-            logger.debug(
-                self._lambda_run_message +
-                'OUTPUT\n'
-                '%(output_bytes)s\n'
-                'END OUTPUT\n',
-                {
-                    'shell_command': self.shell_command,
-                    'output_bytes': output_bytes,
-                }
-            )
-            return output_bytes
+        logger.debug(
+            self._lambda_run_message +
+            'OUTPUT\n'
+            '%(output_bytes)s\n'
+            'END OUTPUT\n',
+            {
+                'shell_command': self.shell_command,
+                'output_bytes': output_bytes,
+            }
+        )
+        return output_bytes
 
     def _build_shell_command(self):
         return f'docker-compose run --rm --service-ports {self.local_lambda.docker_compose_service} ' \

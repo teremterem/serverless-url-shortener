@@ -4,7 +4,7 @@ from tests.local_lambda import fix_json_in_body
 
 def test_hello_inside():
     result = fix_json_in_body(hello({}, None))
-    assert result == {'body': '{"message": "GREETING from Lambda Layer! REAL", "input": {}}', 'statusCode': 200}
+    assert result == {'body': {'input': {}, 'message': 'GREETING from Lambda Layer! REAL'}, 'statusCode': 200}
 
 
 def test_hello(py38lambda):
