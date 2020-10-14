@@ -8,7 +8,7 @@ pipenv run python -m pytest
 ```
 OR
 ```
-pipenv run python -m pytest -svv --log-cli-level=INFO
+pipenv run python -m pytest -svv --log-cli-level=DEBUG
 ```
 
 ## Debug lambdas locally
