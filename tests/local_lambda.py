@@ -135,16 +135,20 @@ class LocalLambdaInvoker:
 
             exit_code = subproc.wait()
             if self.expected_exit_code is not None and exit_code != self.expected_exit_code:
-                raise AssertionError((
-                        self._lambda_run_message +
-                        'EXPECTED EXIT CODE: %(expected_exit_code)s\n' +
-                        'ACTUAL EXIT CODE: %(actual_exit_code)s\n' +
-                        '(NOTE: to turn off this assertion set expected_exit_code to None)\n'
-                ).format(
-                    shell_command=self.shell_command,
-                    expected_exit_code=self.expected_exit_code,
-                    actual_exit_code=exit_code,
-                ))
+                raise AssertionError(
+                    (
+                            self._lambda_run_message +
+                            '\n'
+                            'EXPECTED EXIT CODE: %(expected_exit_code)s\n'
+                            'ACTUAL EXIT CODE: %(actual_exit_code)s\n'
+                            '\n'
+                            '(NOTE: to turn off this assertion completely set expected_exit_code to None)\n'
+                    ) % {
+                        'shell_command': self.shell_command,
+                        'expected_exit_code': self.expected_exit_code,
+                        'actual_exit_code': exit_code,
+                    }
+                )
             logger.debug(
                 self._lambda_run_message +
                 'EXIT CODE: %(exit_code)s\n',
