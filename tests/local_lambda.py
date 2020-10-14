@@ -12,28 +12,25 @@ class LocalLambda:
     def __init__(self, docker_compose_service):
         self.docker_compose_service = docker_compose_service
 
-    def invoke(self, handler, event, expected_exit_code=0):
-        response = invoke_lambda_plain(handler, event)
-        if 'body' in response:
-            try:
-                # assume it is an http lambda that returns json in its response body
-                response['body'] = json.loads(response['body'])
-            except (TypeError, ValueError):
-                # no, it is not... but that's fine too!
-                logger.warning(
-                    'Failed to parse body of http lambda response as json. If this is not an http lambda then you can get '
-                    'rid of this warning by using invoke_plain() instead of invoke().',
-                    exc_info=True,
-                )
-        return response
+    def invoke(self, handler, event, expected_exit_code=0, json_in_http_body=True):
+        return self.invoker(
+            handler, event, expected_exit_code=expected_exit_code
+        ).invoke(json_in_http_body=json_in_http_body)
+
+    def invoke_plain(self, handler, event, expected_exit_code=0):
+        return self.invoker(
+            handler, event, expected_exit_code=expected_exit_code
+        ).invoke_plain()
+
+    def invoker(self, handler, event, expected_exit_code=0):
+        return _LocalLambdaInvoker(self, handler, event, expected_exit_code)
 
 
 class LocalLambdaInvoker:
-    def __init__(self, local_lambda, handler, event, json_in_http_body, expected_exit_code):
+    def __init__(self, local_lambda, handler, event, expected_exit_code):
         self.local_lambda = local_lambda
         self.handler = handler
         self.event = event
-        self.json_in_http_body = json_in_http_body
         self.expected_exit_code = expected_exit_code
 
         self.shell_command = self._build_shell_command()
@@ -44,11 +41,11 @@ class LocalLambdaInvoker:
             '{shell_command}\n'
         )
 
-    def invoke(self):
+    def invoke(self, json_in_http_body=True):
         output_json = json.loads(self.invoke_plain())
 
         json_in_http_body_exc = False
-        if self.json_in_http_body and 'body' in output_json:
+        if json_in_http_body and 'body' in output_json:
             try:
                 # assume it is an http lambda that returns json in its response body
                 output_json['body'] = json.loads(output_json['body'])
