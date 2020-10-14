@@ -137,12 +137,10 @@ class LocalLambdaInvoker:
             if self.expected_exit_code is not None and exit_code != self.expected_exit_code:
                 raise AssertionError(
                     (
+                            'ACTUAL EXIT CODE (%(actual_exit_code)s) != EXPECTED EXIT CODE (%(expected_exit_code)s)' +
                             self._lambda_run_message +
                             '\n'
-                            'EXPECTED EXIT CODE: %(expected_exit_code)s\n'
-                            'ACTUAL EXIT CODE: %(actual_exit_code)s\n'
-                            '\n'
-                            '(NOTE: to turn off this assertion completely set expected_exit_code to None)\n'
+                            '(NOTE: to turn this assertion off completely set expected_exit_code to None)\n'
                     ) % {
                         'shell_command': self.shell_command,
                         'expected_exit_code': self.expected_exit_code,
