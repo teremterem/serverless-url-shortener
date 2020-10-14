@@ -8,18 +8,20 @@ from pprint import pformat
 logger = logging.getLogger(__name__)
 
 _JSON_IN_HTTP_BODY_DEFAULT = True
+_EXPECTED_EXIT_CODE_DEFAULT = None
 
 
 class LocalLambda:
     def __init__(self, docker_compose_service):
         self.docker_compose_service = docker_compose_service
 
-    def invoke(self, handler, event, expected_exit_code=0, json_in_http_body=_JSON_IN_HTTP_BODY_DEFAULT):
+    def invoke(self, handler, event, expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT,
+               json_in_http_body=_JSON_IN_HTTP_BODY_DEFAULT):
         return self.invoker(
             handler, event, expected_exit_code=expected_exit_code
         ).invoke(json_in_http_body=json_in_http_body)
 
-    def invoke_plain(self, handler, event, expected_exit_code=0):
+    def invoke_plain(self, handler, event, expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT):
         return self.invoker(
             handler, event, expected_exit_code=expected_exit_code
         ).invoke_plain()
@@ -138,16 +140,21 @@ class LocalLambdaInvoker:
                 raise AssertionError(
                     (
                             'ACTUAL EXIT CODE (%(actual_exit_code)s) != EXPECTED EXIT CODE (%(expected_exit_code)s)' +
-                            self._lambda_run_message +
-                            '\n'
-                            '(NOTE: to turn this assertion off completely set expected_exit_code to None)\n'
+                            self._lambda_run_message
                     ) % {
                         'shell_command': self.shell_command,
                         'expected_exit_code': self.expected_exit_code,
                         'actual_exit_code': exit_code,
                     }
                 )
-            logger.debug(
+
+            if self.expected_exit_code is None and exit_code != 0:
+                log_level = logging.WARNING
+            else:
+                log_level = logging.DEBUG
+
+            logger.log(
+                log_level,
                 self._lambda_run_message +
                 'EXIT CODE: %(exit_code)s\n',
                 {
