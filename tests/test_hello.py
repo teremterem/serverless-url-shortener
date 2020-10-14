@@ -8,5 +8,5 @@ def test_hello_inside():
 
 
 def test_hello(py38lambda):
-    assert py38lambda.invoke('tests/mocking_handlers.mocking_hello', {'a': ['b']}, expected_exit_code=100500) == \
+    assert py38lambda.invoke('tests/mocking_handlers.mocking_hello', {'a': ['b']}) == \
            {'body': {'input': {'a': ['b']}, 'message': 'aloha fake'}, 'statusCode': 200}
