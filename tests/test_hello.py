@@ -22,6 +22,6 @@ def test_hello(hello_lambda):
 @patch('function/hello.get_real')
 @patch('function/hello.greeting', return_value='aloha')
 def hello_mocker(handler, event, context, mock_greeting, mock_get_real):
-    assert handler.__module__ == 'function/helloo', handler.__module__  # slash in lambda handler module? oO
+    assert handler.__module__ == 'function/hello', handler.__module__  # slash in lambda handler module name? oO
     mock_get_real.return_value = 'fake'
     return handler(event, context)

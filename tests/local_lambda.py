@@ -159,7 +159,8 @@ class LocalLambdaInvoker:
                             'ACTUAL EXIT CODE (%(actual_exit_code)s) != EXPECTED EXIT CODE (%(expected_exit_code)s)' +
                             self._LAMBDA_RUN_MESSAGE +
                             '\n'
-                            '(NOTE: To disable this assertion completely pass expected_exit_code=None)'
+                            '(NOTE: If, for any reason, you need to disable this assertion completely, '
+                            'pass expected_exit_code=None)'
                     ) % {
                         'shell_command': self.shell_command,
                         'expected_exit_code': self.expected_exit_code,
