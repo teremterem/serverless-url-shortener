@@ -13,5 +13,5 @@ def test_hello_no_mocker(hello_lambda):
 
 
 def test_hello(hello_lambda):
-    result = hello_lambda.invoke({'a': ['b']}, mocker_str='tra.ta::ta')
+    result = hello_lambda.invoke({'a': ['b']}, mocker_str='tests.mocking_handlers::mocking_hello')
     assert result == {'body': {'input': {'a': ['b']}, 'message': 'aloha fake'}, 'statusCode': 200}

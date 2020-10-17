@@ -4,6 +4,7 @@ import os
 import subprocess
 from contextlib import contextmanager
 from functools import wraps
+from importlib import import_module
 from pprint import pformat
 
 logger = logging.getLogger(__name__)
@@ -17,13 +18,17 @@ _EXPECTED_EXIT_CODE_DEFAULT = None
 def mockable(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        # TODO
-        mocker = os.environ.get(LOCAL_LAMBDA_MOCKER_ENV_VAR)
-        if mocker:
-            print(LOCAL_LAMBDA_MOCKER_ENV_VAR, '=', repr(mocker))
+        mocker_str = os.environ.get(LOCAL_LAMBDA_MOCKER_ENV_VAR)
+        if mocker_str:
+            mocker_module_name, mocker_function_name = mocker_str.split('::', maxsplit=2)
+            mocker_module = import_module(mocker_module_name, package='.')
+            mocker_method = getattr(mocker_module, mocker_function_name)
+
+            print(LOCAL_LAMBDA_MOCKER_ENV_VAR, '=', repr(mocker_method))
         else:
             print('NO MOCKER !')
 
+        # TODO
         return func(*args, **kwargs)
 
     return wrapper
