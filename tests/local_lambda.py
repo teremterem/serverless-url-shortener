@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 LOCAL_LAMBDA_MOCKER_ENV_VAR = '_LOCAL_LAMBDA_MOCKER'
 
 _JSON_IN_HTTP_BODY_DEFAULT = True
-_EXPECTED_EXIT_CODE_DEFAULT = None
+_EXPECTED_EXIT_CODE_DEFAULT = 0
 _MOCKABLE_LOG_LEVEL = logging.WARNING
 
 
@@ -157,7 +157,9 @@ class LocalLambdaInvoker:
                 raise AssertionError(
                     (
                             'ACTUAL EXIT CODE (%(actual_exit_code)s) != EXPECTED EXIT CODE (%(expected_exit_code)s)' +
-                            self._LAMBDA_RUN_MESSAGE
+                            self._LAMBDA_RUN_MESSAGE +
+                            '\n'
+                            '(NOTE: To disable this assertion completely pass expected_exit_code=None)'
                     ) % {
                         'shell_command': self.shell_command,
                         'expected_exit_code': self.expected_exit_code,

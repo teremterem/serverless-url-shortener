@@ -17,6 +17,7 @@ pipenv run python -m pytest -svv --log-cli-level=DEBUG
 - https://github.com/ionelmc/python-remote-pdb#usage
 
 ```
+nc -C 127.0.0.1 4444
 docker-compose run --rm python3.8-lambda function/hello.hello '{}'
 ```
 
