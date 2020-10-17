@@ -12,6 +12,6 @@ sys.path.append('layer/common-code/python')
 @pytest.fixture
 def hello_lambda():
     return LocalLambda(
-        lambda event: f'docker-compose run --rm --service-ports python3.8-lambda '
-                      f'tests/mocking_handlers.mocking_hello {shlex.quote(json.dumps(event))}'
+        lambda event: f'docker-compose run --rm --service-ports python3.8-lambda function/hello.hello '
+                      f'{shlex.quote(json.dumps(event))}'
     )
