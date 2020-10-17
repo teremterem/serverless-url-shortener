@@ -13,22 +13,26 @@ LOCAL_LAMBDA_MOCKER_ENV_VAR = '_LOCAL_LAMBDA_MOCKER'
 
 _JSON_IN_HTTP_BODY_DEFAULT = True
 _EXPECTED_EXIT_CODE_DEFAULT = None
+_MOCKABLE_LOG_LEVEL = logging.WARNING
 
 
 def mockable(func):
+    # TODO how to make sure this decorator is not deployed to remote lambda at all ?
     @wraps(func)
     def wrapper(*args, **kwargs):
+        logger.log(_MOCKABLE_LOG_LEVEL, '@mockable: entering %r', func)
         mocker_str = os.environ.get(LOCAL_LAMBDA_MOCKER_ENV_VAR)
         if mocker_str:
-            mocker_module_name, mocker_function_name = mocker_str.split('::', maxsplit=2)
+            logger.log(_MOCKABLE_LOG_LEVEL, '@mockable: mocker_str=%r', mocker_str)
+
+            mocker_module_name, mocker_name = mocker_str.split('::', maxsplit=2)
             mocker_module = import_module(mocker_module_name, package='.')
-            mocker_method = getattr(mocker_module, mocker_function_name)
+            mocker = getattr(mocker_module, mocker_name)
 
-            print(LOCAL_LAMBDA_MOCKER_ENV_VAR, '=', repr(mocker_method))
-        else:
-            print('NO MOCKER !')
+            logger.log(_MOCKABLE_LOG_LEVEL, '@mockable: using mocker %r', mocker)
+            return mocker(func, *args, **kwargs)
 
-        # TODO
+        logger.log(_MOCKABLE_LOG_LEVEL, '@mockable: none or empty mocker_str')
         return func(*args, **kwargs)
 
     return wrapper
