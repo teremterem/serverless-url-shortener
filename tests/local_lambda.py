@@ -1,11 +1,14 @@
 import json
 import logging
+import os
 import subprocess
 from contextlib import contextmanager
 from functools import wraps
 from pprint import pformat
 
 logger = logging.getLogger(__name__)
+
+LOCAL_LAMBDA_MOCKER_ENV_VAR = '_LOCAL_LAMBDA_MOCKER'
 
 _JSON_IN_HTTP_BODY_DEFAULT = True
 _EXPECTED_EXIT_CODE_DEFAULT = None
@@ -15,6 +18,12 @@ def mockable(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         # TODO
+        mocker = os.environ.get(LOCAL_LAMBDA_MOCKER_ENV_VAR)
+        if mocker:
+            print(LOCAL_LAMBDA_MOCKER_ENV_VAR, '=', repr(mocker))
+        else:
+            print('NO MOCKER !')
+
         return func(*args, **kwargs)
 
     return wrapper
@@ -24,15 +33,19 @@ class LocalLambda:
     def __init__(self, shell_command_builder):
         self.shell_command_builder = shell_command_builder
 
-    def invoke(self, event, expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT,
+    def invoke(self, event, mocker_str=None, expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT,
                json_in_http_body=_JSON_IN_HTTP_BODY_DEFAULT):
-        return self.invoker(event, expected_exit_code=expected_exit_code).invoke(json_in_http_body=json_in_http_body)
+        return self.invoker(
+            event, mocker_str=mocker_str, expected_exit_code=expected_exit_code
+        ).invoke(json_in_http_body=json_in_http_body)
 
-    def invoke_plain(self, event, expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT):
-        return self.invoker(event, expected_exit_code=expected_exit_code).invoke_plain()
+    def invoke_plain(self, event, mocker_str=None, expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT):
+        return self.invoker(
+            event, mocker_str=mocker_str, expected_exit_code=expected_exit_code
+        ).invoke_plain()
 
-    def invoker(self, event, expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT):
-        return _LocalLambdaInvoker(self, event, expected_exit_code)
+    def invoker(self, event, mocker_str=None, expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT):
+        return _LocalLambdaInvoker(self, event, mocker_str, expected_exit_code)
 
 
 def fix_json_in_body(lambda_response_json):
@@ -43,12 +56,12 @@ def fix_json_in_body(lambda_response_json):
 
 
 class LocalLambdaInvoker:
-    def __init__(self, local_lambda, event, expected_exit_code):
+    def __init__(self, local_lambda, event, mocker_str, expected_exit_code):
         self.local_lambda = local_lambda
         self.event = event
         self.expected_exit_code = expected_exit_code
 
-        self.shell_command = self.local_lambda.shell_command_builder(event)
+        self.shell_command = self.local_lambda.shell_command_builder(event, mocker_str)
 
     def invoke(self, json_in_http_body=_JSON_IN_HTTP_BODY_DEFAULT):
         output_json = json.loads(self.invoke_plain())
