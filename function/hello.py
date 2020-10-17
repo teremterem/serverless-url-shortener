@@ -2,7 +2,14 @@ import json
 
 from sample_module import greeting, get_real
 
+try:
+    from testss.local_lambda import mockable
+except ImportError:
+    def mockable(func):
+        return func
 
+
+@mockable
 def hello(event, context):
     # breakpoint()
     body = {

@@ -2,12 +2,22 @@ import json
 import logging
 import subprocess
 from contextlib import contextmanager
+from functools import wraps
 from pprint import pformat
 
 logger = logging.getLogger(__name__)
 
 _JSON_IN_HTTP_BODY_DEFAULT = True
 _EXPECTED_EXIT_CODE_DEFAULT = None
+
+
+def mockable(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        # TODO
+        return func(*args, **kwargs)
+
+    return wrapper
 
 
 class LocalLambda:
