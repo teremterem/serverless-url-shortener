@@ -101,7 +101,7 @@ class LocalLambdaInvoker:
                         'shell_command': self.shell_command,
                         'output_json': pformat(output_json),
                         'exc_info': json_in_http_body_exc,
-                    }
+                    },
                 )
         elif logger.isEnabledFor(logging.DEBUG):
             logger.debug(
@@ -110,7 +110,7 @@ class LocalLambdaInvoker:
                 {
                     'shell_command': self.shell_command,
                     'output_json': pformat(output_json),
-                }
+                },
             )
 
         return output_json
@@ -127,7 +127,7 @@ class LocalLambdaInvoker:
             {
                 'shell_command': self.shell_command,
                 'output_bytes': output_bytes,
-            }
+            },
         )
         return output_bytes
 
@@ -138,7 +138,7 @@ class LocalLambdaInvoker:
             'BEGIN\n',
             {
                 'shell_command': self.shell_command,
-            }
+            },
         )
 
         subproc = subprocess.Popen(
@@ -161,13 +161,13 @@ class LocalLambdaInvoker:
                             '\n'
                             'CHECK LAMBDA\'S STDERR TO SEE WHAT THE PROBLEM IS.\n'
                             '\n'
-                            '(NOTE: If, for any reason, you need to disable this assertion completely, '
-                            'pass expected_exit_code=None)'
+                            '(NOTE: If, for any reason, you need to disable this assertion completely, pass '
+                            'expected_exit_code=None)'
                     ) % {
                         'shell_command': self.shell_command,
                         'expected_exit_code': self.expected_exit_code,
                         'actual_exit_code': exit_code,
-                    }
+                    },
                 )
 
             if self.expected_exit_code is None and exit_code != 0:
@@ -182,7 +182,7 @@ class LocalLambdaInvoker:
                 {
                     'shell_command': self.shell_command,
                     'exit_code': exit_code,
-                }
+                },
             )
 
     _LAMBDA_RUN_MESSAGE = (
