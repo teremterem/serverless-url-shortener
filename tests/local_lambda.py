@@ -1,6 +1,5 @@
 import json
 import logging
-import shlex
 import subprocess
 from contextlib import contextmanager
 from pprint import pformat
@@ -12,22 +11,18 @@ _EXPECTED_EXIT_CODE_DEFAULT = None
 
 
 class LocalLambda:
-    def __init__(self, docker_compose_service):
-        self.docker_compose_service = docker_compose_service
+    def __init__(self, shell_command_builder):
+        self.shell_command_builder = shell_command_builder
 
-    def invoke(self, handler, event, expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT,
+    def invoke(self, event, expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT,
                json_in_http_body=_JSON_IN_HTTP_BODY_DEFAULT):
-        return self.invoker(
-            handler, event, expected_exit_code=expected_exit_code
-        ).invoke(json_in_http_body=json_in_http_body)
+        return self.invoker(event, expected_exit_code=expected_exit_code).invoke(json_in_http_body=json_in_http_body)
 
-    def invoke_plain(self, handler, event, expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT):
-        return self.invoker(
-            handler, event, expected_exit_code=expected_exit_code
-        ).invoke_plain()
+    def invoke_plain(self, event, expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT):
+        return self.invoker(event, expected_exit_code=expected_exit_code).invoke_plain()
 
-    def invoker(self, handler, event, expected_exit_code=0):
-        return _LocalLambdaInvoker(self, handler, event, expected_exit_code)
+    def invoker(self, event, expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT):
+        return _LocalLambdaInvoker(self, event, expected_exit_code)
 
 
 def fix_json_in_body(lambda_response_json):
@@ -38,16 +33,16 @@ def fix_json_in_body(lambda_response_json):
 
 
 class LocalLambdaInvoker:
-    def __init__(self, local_lambda, handler, event, expected_exit_code):
+    def __init__(self, local_lambda, event, expected_exit_code):
         self.local_lambda = local_lambda
-        self.handler = handler
         self.event = event
         self.expected_exit_code = expected_exit_code
 
-        self.shell_command = self._build_shell_command()
+        self.shell_command = self.local_lambda.shell_command_builder(event)
 
     def invoke(self, json_in_http_body=_JSON_IN_HTTP_BODY_DEFAULT):
         output_json = json.loads(self.invoke_plain())
+        # TODO include original stdout into exception message if json parsing fails (use exception chaining?)
 
         json_in_http_body_exc = False
         if json_in_http_body:
@@ -103,10 +98,6 @@ class LocalLambdaInvoker:
             }
         )
         return output_bytes
-
-    def _build_shell_command(self):
-        return f'docker-compose run --rm --service-ports {self.local_lambda.docker_compose_service} ' \
-               f'{self.handler} {shlex.quote(json.dumps(self.event))}'
 
     @contextmanager
     def _spawn_docker_service(self):

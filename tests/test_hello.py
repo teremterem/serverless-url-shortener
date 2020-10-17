@@ -7,6 +7,6 @@ def test_hello_inside():
     assert result == {'body': {'input': {}, 'message': 'GREETING from Lambda Layer! REAL'}, 'statusCode': 200}
 
 
-def test_hello(py38lambda):
-    assert py38lambda.invoke('tests/mocking_handlers.mocking_hello', {'a': ['b']}) == \
-           {'body': {'input': {'a': ['b']}, 'message': 'aloha fake'}, 'statusCode': 200}
+def test_hello(hello_lambda):
+    result = hello_lambda.invoke({'a': ['b']})
+    assert result == {'body': {'input': {'a': ['b']}, 'message': 'aloha fake'}, 'statusCode': 200}
