@@ -159,6 +159,8 @@ class LocalLambdaInvoker:
                             'ACTUAL EXIT CODE (%(actual_exit_code)s) != EXPECTED EXIT CODE (%(expected_exit_code)s)' +
                             self._LAMBDA_RUN_MESSAGE +
                             '\n'
+                            'CHECK LAMBDA\'S STDERR TO SEE WHAT THE PROBLEM IS.\n'
+                            '\n'
                             '(NOTE: If, for any reason, you need to disable this assertion completely, '
                             'pass expected_exit_code=None)'
                     ) % {
