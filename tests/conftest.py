@@ -18,12 +18,13 @@ def _sls_invoke_local_docker(lambda_name):
     # TODO put some version of this function into local_lambda lib for reference
     return LocalLambda(
         lambda event, mocker_str: (
-            f'serverless invoke local --function {shlex.quote(lambda_name)} --docker --skip-package '
-            f'--docker-arg "-e {LOCAL_LAMBDA_MOCKER_ENV_VAR}={shlex.quote(mocker_str)}" '
-            f'--docker-arg "-e PYTHONBREAKPOINT=remote_pdb.set_trace" '
-            f'--docker-arg "-e REMOTE_PDB_HOST=0.0.0.0" '
-            f'--docker-arg "-e REMOTE_PDB_PORT=4444" '
-            f'--docker-arg "-p 4444:4444" '
-            f'--data {shlex.quote(json.dumps(event))}'
+            f"sls invoke local -f {shlex.quote(lambda_name)} "
+            f"-e {LOCAL_LAMBDA_MOCKER_ENV_VAR}={shlex.quote(mocker_str)} "
+            f"-d {shlex.quote(json.dumps(event))} "
+            f"-e PYTHONBREAKPOINT=remote_pdb.set_trace "
+            f"-e REMOTE_PDB_HOST=0.0.0.0 "
+            f"-e REMOTE_PDB_PORT=4444 "
+            f"--docker-arg='-p 4444:4444' "
+            f"--docker --skip-package"
         )
     )

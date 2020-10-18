@@ -119,16 +119,23 @@ class LocalLambdaInvoker:
         with self._spawn_docker_service() as lambda_output:
             output_bytes = lambda_output.read()
 
-        logger.debug(
-            self._LAMBDA_RUN_MESSAGE +
-            'OUTPUT\n'
-            '%(output_bytes)s\n'
-            'END OUTPUT\n',
-            {
-                'shell_command': self.shell_command,
-                'output_bytes': output_bytes,
-            },
-        )
+            if logger.isEnabledFor(logging.DEBUG):
+                try:
+                    output = output_bytes.decode()
+                except ValueError:
+                    output = repr(output_bytes) + '\n'
+
+                logger.debug(
+                    self._LAMBDA_RUN_MESSAGE +
+                    'OUTPUT\n'
+                    '\n'
+                    '%(output)s\n'
+                    'END OUTPUT\n',
+                    {
+                        'shell_command': self.shell_command,
+                        'output': output,
+                    },
+                )
         return output_bytes
 
     @contextmanager
@@ -146,6 +153,7 @@ class LocalLambdaInvoker:
             shell=True,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
         )
         try:  # https://docs.python.org/3/library/contextlib.html#contextlib.contextmanager
             yield subproc.stdout
@@ -159,7 +167,10 @@ class LocalLambdaInvoker:
                             'ACTUAL EXIT CODE (%(actual_exit_code)s) != EXPECTED EXIT CODE (%(expected_exit_code)s)' +
                             self._LAMBDA_RUN_MESSAGE +
                             '\n'
-                            'CHECK LAMBDA\'S STDERR TO SEE WHAT THE PROBLEM IS.\n'
+                            'Check lambda\'s STDERR to see what the problem is\n'
+                            '\n'
+                            'Alternatively, copy the command from above and paste it to console/terminal to '
+                            'run/troubleshoot directly\n'
                             '\n'
                             '(NOTE: If, for any reason, you need to disable this assertion completely, pass '
                             'expected_exit_code=None)'
@@ -169,6 +180,7 @@ class LocalLambdaInvoker:
                         'actual_exit_code': exit_code,
                     },
                 )
+                # TODO include STDOUT into the error message somehow ? it may be a shell command failure as well
 
             if self.expected_exit_code is None and exit_code != 0:
                 log_level = logging.WARNING
