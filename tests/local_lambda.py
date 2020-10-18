@@ -118,6 +118,7 @@ class LocalLambdaInvoker:
             # "sls invoke local --docker" mixes stdout with stderr, hence we need to find json in all the output...
             output_plain = output_plain.rsplit(sep='\n', maxsplit=2)[1]
             # TODO are you sure this approach is good enough ?
+            # TODO logger.debug(output_plain)...
 
         output_json = json.loads(output_plain)
         # TODO include original stdout into exception message if json parsing fails (use exception chaining?)
