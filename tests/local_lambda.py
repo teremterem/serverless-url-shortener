@@ -111,7 +111,15 @@ class LocalLambdaInvoker:
         self.shell_command = self.local_lambda.shell_command_builder(event, mocker_str or '')
 
     def invoke(self):
-        output_json = json.loads(self.invoke_plain())
+        output_plain = self.invoke_plain()
+        if self.local_lambda.try_to_locate_json_output:
+            output_plain = output_plain.decode()
+
+            # "sls invoke local --docker" mixes stdout with stderr, hence we need to find json in all the output...
+            output_plain = output_plain.rsplit(sep='\n', maxsplit=2)[1]
+            # TODO are you sure this approach is good enough ?
+
+        output_json = json.loads(output_plain)
         # TODO include original stdout into exception message if json parsing fails (use exception chaining?)
 
         json_in_http_body_exc = False
