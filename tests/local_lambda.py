@@ -44,7 +44,7 @@ class LocalLambda:
             self,
             shell_command_builder,
 
-            # TODO some abstraction layer for this feature ? id seems to be sls specific...
+            # TODO some abstraction layer for this feature ? it seems to be sls specific...
             try_to_locate_json_output=_TRY_TO_LOCATE_JSON_OUTPUT_DEFAULT,
     ):
         self.shell_command_builder = shell_command_builder
