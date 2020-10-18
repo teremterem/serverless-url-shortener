@@ -1,4 +1,5 @@
 import json
+import os
 import shlex
 import sys
 
@@ -25,7 +26,10 @@ def _sls_invoke_local_docker(lambda_name):
             f"-e REMOTE_PDB_HOST=0.0.0.0 "
             f"-e REMOTE_PDB_PORT=4444 "
             f"--docker-arg='-p 4444:4444' "
-            f"--docker-arg='-v ./tests:/var/task/tests:ro,delegated' "
+
+            # TODO any way to use relative path here ?
+            f"--docker-arg='-v {os.path.dirname(os.path.abspath(__file__))}:/var/task/tests' "
+
             f"--docker --skip-package"
         )
     )

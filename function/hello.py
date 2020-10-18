@@ -5,6 +5,7 @@ from sample_module import greeting, get_real
 try:
     from tests.local_lambda import mockable
 except ImportError:
+    # TODO this may be a bit too silent as for troubleshooting - figure something out
     def mockable(func):
         return func
 
