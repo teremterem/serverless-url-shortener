@@ -70,7 +70,7 @@ class LocalLambdaInvoker:
         self.event = event
         self.expected_exit_code = expected_exit_code
 
-        self.shell_command = self.local_lambda.shell_command_builder(event, mocker_str)
+        self.shell_command = self.local_lambda.shell_command_builder(event, mocker_str or '')
 
     def invoke(self, json_in_http_body=_JSON_IN_HTTP_BODY_DEFAULT):
         output_json = json.loads(self.invoke_plain())
