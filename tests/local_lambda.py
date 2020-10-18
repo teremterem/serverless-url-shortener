@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 LOCAL_LAMBDA_MOCKER_ENV_VAR = '_LOCAL_LAMBDA_MOCKER'
 
 _JSON_IN_HTTP_BODY_DEFAULT = True
+_TRY_TO_LOCATE_JSON_OUTPUT_DEFAULT = True
 _EXPECTED_EXIT_CODE_DEFAULT = 0
 _MOCKABLE_LOG_LEVEL = logging.WARNING
 
@@ -39,22 +40,58 @@ def mockable(func):
 
 
 class LocalLambda:
-    def __init__(self, shell_command_builder):
+    def __init__(
+            self,
+            shell_command_builder,
+
+            # TODO some abstraction layer for this feature ? id seems to be sls specific...
+            try_to_locate_json_output=_TRY_TO_LOCATE_JSON_OUTPUT_DEFAULT,
+    ):
         self.shell_command_builder = shell_command_builder
+        self.try_to_locate_json_output = try_to_locate_json_output
 
-    def invoke(self, event, mocker_str=None, expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT,
-               json_in_http_body=_JSON_IN_HTTP_BODY_DEFAULT):
+    def invoke(
+            self,
+            event,
+            mocker_str=None,
+            expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT,
+            json_in_http_body=_JSON_IN_HTTP_BODY_DEFAULT,
+    ):
         return self.invoker(
-            event, mocker_str=mocker_str, expected_exit_code=expected_exit_code
-        ).invoke(json_in_http_body=json_in_http_body)
+            event,
+            mocker_str=mocker_str,
+            expected_exit_code=expected_exit_code,
+            json_in_http_body=json_in_http_body,
+        ).invoke()
 
-    def invoke_plain(self, event, mocker_str=None, expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT):
+    def invoke_plain(
+            self,
+            event,
+            mocker_str=None,
+            expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT,
+            json_in_http_body=_JSON_IN_HTTP_BODY_DEFAULT,
+    ):
         return self.invoker(
-            event, mocker_str=mocker_str, expected_exit_code=expected_exit_code
+            event,
+            mocker_str=mocker_str,
+            expected_exit_code=expected_exit_code,
+            json_in_http_body=json_in_http_body,
         ).invoke_plain()
 
-    def invoker(self, event, mocker_str=None, expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT):
-        return _LocalLambdaInvoker(self, event, mocker_str, expected_exit_code)
+    def invoker(
+            self,
+            event,
+            mocker_str=None,
+            expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT,
+            json_in_http_body=_JSON_IN_HTTP_BODY_DEFAULT,
+    ):
+        return _LocalLambdaInvoker(
+            self,
+            event,
+            mocker_str,
+            expected_exit_code,
+            json_in_http_body,
+        )
 
 
 def fix_json_in_body(lambda_response_json):
@@ -65,19 +102,20 @@ def fix_json_in_body(lambda_response_json):
 
 
 class LocalLambdaInvoker:
-    def __init__(self, local_lambda, event, mocker_str, expected_exit_code):
+    def __init__(self, local_lambda, event, mocker_str, expected_exit_code, json_in_http_body):
         self.local_lambda = local_lambda
         self.event = event
         self.expected_exit_code = expected_exit_code
+        self.json_in_http_body = json_in_http_body
 
         self.shell_command = self.local_lambda.shell_command_builder(event, mocker_str or '')
 
-    def invoke(self, json_in_http_body=_JSON_IN_HTTP_BODY_DEFAULT):
+    def invoke(self):
         output_json = json.loads(self.invoke_plain())
         # TODO include original stdout into exception message if json parsing fails (use exception chaining?)
 
         json_in_http_body_exc = False
-        if json_in_http_body:
+        if self.json_in_http_body:
             try:
                 # assume it is an http lambda that returns json in its response body
                 fix_json_in_body(output_json)
@@ -94,7 +132,7 @@ class LocalLambdaInvoker:
             if logger.isEnabledFor(logging.WARNING):
                 logger.warning(
                     'Failed to parse body of http lambda response as json. To get rid of this warning (if it is not an '
-                    'http lambda or its response body is not supposed to be json) set json_in_http_body to False.' +
+                    'http lambda or its response body is not supposed to be json) pass json_in_http_body=False.' +
                     self._LAMBDA_RUN_MESSAGE +
                     output_json_message,
                     {
