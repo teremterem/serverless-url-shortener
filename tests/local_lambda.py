@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 LOCAL_LAMBDA_MOCKER_ENV_VAR = '_LOCAL_LAMBDA_MOCKER'
 
 _JSON_IN_HTTP_BODY_DEFAULT = True
+_TRY_TO_LOCATE_JSON_OUTPUT_DEFAULT = True
 _EXPECTED_EXIT_CODE_DEFAULT = 0
 _MOCKABLE_LOG_LEVEL = logging.WARNING
 
@@ -39,22 +40,58 @@ def mockable(func):
 
 
 class LocalLambda:
-    def __init__(self, shell_command_builder):
+    def __init__(
+            self,
+            shell_command_builder,
+
+            # TODO some abstraction layer for this feature ? it seems to be sls specific...
+            try_to_locate_json_output=_TRY_TO_LOCATE_JSON_OUTPUT_DEFAULT,
+    ):
         self.shell_command_builder = shell_command_builder
+        self.try_to_locate_json_output = try_to_locate_json_output
 
-    def invoke(self, event, mocker_str=None, expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT,
-               json_in_http_body=_JSON_IN_HTTP_BODY_DEFAULT):
+    def invoke(
+            self,
+            event,
+            mocker_str=None,
+            expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT,
+            json_in_http_body=_JSON_IN_HTTP_BODY_DEFAULT,
+    ):
         return self.invoker(
-            event, mocker_str=mocker_str, expected_exit_code=expected_exit_code
-        ).invoke(json_in_http_body=json_in_http_body)
+            event,
+            mocker_str=mocker_str,
+            expected_exit_code=expected_exit_code,
+            json_in_http_body=json_in_http_body,
+        ).invoke()
 
-    def invoke_plain(self, event, mocker_str=None, expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT):
+    def invoke_plain(
+            self,
+            event,
+            mocker_str=None,
+            expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT,
+            json_in_http_body=_JSON_IN_HTTP_BODY_DEFAULT,
+    ):
         return self.invoker(
-            event, mocker_str=mocker_str, expected_exit_code=expected_exit_code
+            event,
+            mocker_str=mocker_str,
+            expected_exit_code=expected_exit_code,
+            json_in_http_body=json_in_http_body,
         ).invoke_plain()
 
-    def invoker(self, event, mocker_str=None, expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT):
-        return _LocalLambdaInvoker(self, event, mocker_str, expected_exit_code)
+    def invoker(
+            self,
+            event,
+            mocker_str=None,
+            expected_exit_code=_EXPECTED_EXIT_CODE_DEFAULT,
+            json_in_http_body=_JSON_IN_HTTP_BODY_DEFAULT,
+    ):
+        return _LocalLambdaInvoker(
+            self,
+            event,
+            mocker_str,
+            expected_exit_code,
+            json_in_http_body,
+        )
 
 
 def fix_json_in_body(lambda_response_json):
@@ -65,19 +102,29 @@ def fix_json_in_body(lambda_response_json):
 
 
 class LocalLambdaInvoker:
-    def __init__(self, local_lambda, event, mocker_str, expected_exit_code):
+    def __init__(self, local_lambda, event, mocker_str, expected_exit_code, json_in_http_body):
         self.local_lambda = local_lambda
         self.event = event
         self.expected_exit_code = expected_exit_code
+        self.json_in_http_body = json_in_http_body
 
-        self.shell_command = self.local_lambda.shell_command_builder(event, mocker_str)
+        self.shell_command = self.local_lambda.shell_command_builder(event, mocker_str or '')
 
-    def invoke(self, json_in_http_body=_JSON_IN_HTTP_BODY_DEFAULT):
-        output_json = json.loads(self.invoke_plain())
+    def invoke(self):
+        output_plain = self.invoke_plain()
+        if self.local_lambda.try_to_locate_json_output:
+            output_plain = output_plain.decode()
+
+            # "sls invoke local --docker" mixes stdout with stderr, hence we need to find json in all the output...
+            output_plain = output_plain.rsplit(sep='\n', maxsplit=2)[1]
+            # TODO are you sure this approach is good enough ?
+            # TODO logger.debug(output_plain)...
+
+        output_json = json.loads(output_plain)
         # TODO include original stdout into exception message if json parsing fails (use exception chaining?)
 
         json_in_http_body_exc = False
-        if json_in_http_body:
+        if self.json_in_http_body:
             try:
                 # assume it is an http lambda that returns json in its response body
                 fix_json_in_body(output_json)
@@ -94,7 +141,7 @@ class LocalLambdaInvoker:
             if logger.isEnabledFor(logging.WARNING):
                 logger.warning(
                     'Failed to parse body of http lambda response as json. To get rid of this warning (if it is not an '
-                    'http lambda or its response body is not supposed to be json) set json_in_http_body to False.' +
+                    'http lambda or its response body is not supposed to be json) pass json_in_http_body=False.' +
                     self._LAMBDA_RUN_MESSAGE +
                     output_json_message,
                     {
@@ -119,16 +166,23 @@ class LocalLambdaInvoker:
         with self._spawn_docker_service() as lambda_output:
             output_bytes = lambda_output.read()
 
-        logger.debug(
-            self._LAMBDA_RUN_MESSAGE +
-            'OUTPUT\n'
-            '%(output_bytes)s\n'
-            'END OUTPUT\n',
-            {
-                'shell_command': self.shell_command,
-                'output_bytes': output_bytes,
-            },
-        )
+            if logger.isEnabledFor(logging.DEBUG):
+                try:
+                    output = output_bytes.decode()
+                except ValueError:
+                    output = repr(output_bytes) + '\n'
+
+                logger.debug(
+                    self._LAMBDA_RUN_MESSAGE +
+                    'OUTPUT\n'
+                    '\n'
+                    '%(output)s\n'
+                    'END OUTPUT\n',
+                    {
+                        'shell_command': self.shell_command,
+                        'output': output,
+                    },
+                )
         return output_bytes
 
     @contextmanager
@@ -146,6 +200,7 @@ class LocalLambdaInvoker:
             shell=True,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
         )
         try:  # https://docs.python.org/3/library/contextlib.html#contextlib.contextmanager
             yield subproc.stdout
@@ -159,7 +214,10 @@ class LocalLambdaInvoker:
                             'ACTUAL EXIT CODE (%(actual_exit_code)s) != EXPECTED EXIT CODE (%(expected_exit_code)s)' +
                             self._LAMBDA_RUN_MESSAGE +
                             '\n'
-                            'CHECK LAMBDA\'S STDERR TO SEE WHAT THE PROBLEM IS.\n'
+                            'Check lambda\'s STDERR to see what the problem is\n'
+                            '\n'
+                            'Alternatively, copy the command from above and paste it to console/terminal to '
+                            'run/troubleshoot directly\n'
                             '\n'
                             '(NOTE: If, for any reason, you need to disable this assertion completely, pass '
                             'expected_exit_code=None)'
@@ -169,6 +227,7 @@ class LocalLambdaInvoker:
                         'actual_exit_code': exit_code,
                     },
                 )
+                # TODO include STDOUT into the error message somehow ? it may be a shell command failure as well
 
             if self.expected_exit_code is None and exit_code != 0:
                 log_level = logging.WARNING

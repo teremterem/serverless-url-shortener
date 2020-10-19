@@ -1,4 +1,5 @@
 import json
+import os
 import shlex
 import sys
 
@@ -11,9 +12,24 @@ sys.path.append('layer/common-code/python')
 
 @pytest.fixture
 def hello_lambda():
+    return _sls_invoke_local_docker('hello')
+
+
+def _sls_invoke_local_docker(lambda_name):
+    # TODO put some version of this function into local_lambda lib for reference
     return LocalLambda(
-        # TODO put some version of this into the lib as reference
-        lambda event, mocker_str: f'docker-compose run --rm --service-ports -e '
-                                  f'{LOCAL_LAMBDA_MOCKER_ENV_VAR}={shlex.quote(mocker_str)} '
-                                  f'python3.8-lambda function/hello.hello {shlex.quote(json.dumps(event))}'
+        lambda event, mocker_str: (
+            f"sls invoke local -f {shlex.quote(lambda_name)} "
+            f"-e {LOCAL_LAMBDA_MOCKER_ENV_VAR}={shlex.quote(mocker_str)} "
+            f"-d {shlex.quote(json.dumps(event))} "
+            f"-e PYTHONBREAKPOINT=remote_pdb.set_trace "
+            f"-e REMOTE_PDB_HOST=0.0.0.0 "
+            f"-e REMOTE_PDB_PORT=4444 "
+            f"--docker-arg='-p 4444:4444' "
+
+            # TODO any way to use relative path here ?
+            f"--docker-arg='-v {os.path.dirname(os.path.abspath(__file__))}:/var/task/tests' "
+
+            f"--docker --skip-package"
+        )
     )
